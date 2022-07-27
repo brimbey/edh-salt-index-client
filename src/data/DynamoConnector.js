@@ -1,19 +1,37 @@
+const getDomainPrefix = () => {
+    const href = window.location.href;
+    console.log(`window.location.href :: ${window.location.href}`);
+
+    if (href.includes(`localhost`)) {
+        return `http://localhost:3333`;
+    } else if (href.includes(`staging`)) {
+        return `https://staging-api.commandersalt.com`;
+    }
+
+    return `https://api.commandersalt.com`;
+}
+
 export const DynamoConnector = {
   getLeaderboard: async (cursor, callback) => {
-    let fetchUri = `/api/leaderboard`;
+    let fetchUri = `${getDomainPrefix()}/leaderboard`;
 
     if (cursor) {
         cursor = encodeURIComponent(cursor);
         fetchUri = `${fetchUri}?cursor=${cursor}`;
     }
     
-    const results = await (await fetch(fetchUri)).json();
+    const results = await (await fetch(fetchUri, {
+        method: "GET",
+        headers: {
+            "Content-type": "application/json;charset=UTF-8",
+        }
+      })).json();
 
     callback(results);
   },
   importDeckList: async (url, statusCallback, doneCallback, errorCallback) => {
     try {
-        let response = await (await fetch(`/api/import?url=${url}`)).json()
+        let response = await (await fetch(`${getDomainPrefix()}/import?url=${url}`)).json()
         const commanders = Object.keys(response?.deck?.commanders);
         let saltTotal = 0;
         const nodes = response.deck.cards;
@@ -29,7 +47,7 @@ export const DynamoConnector = {
             const cardname = cardnameList[i];
             statusCallback({type: `card`, card: cardname, percentage: Math.floor((i / cardnameList.length) * 100)});
 
-            let data = await (await fetch(`/api/card?card=${cardname}`)).json();
+            let data = await (await fetch(`${getDomainPrefix()}/card?card=${cardname}`)).json();
             if (data?.salt) {
                 cardList.push({
                     name: cardname,
@@ -40,7 +58,7 @@ export const DynamoConnector = {
             }
         }
 
-        const persistResponse = await (await fetch(`/api/persist`, {
+        const persistResponse = await (await fetch(`${getDomainPrefix()}/persist`, {
             method: "POST",
             body: JSON.stringify({
                 url: response?.deck?.url,

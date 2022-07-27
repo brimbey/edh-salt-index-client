@@ -22,6 +22,7 @@ export class MainView extends React.Component {
         console.log(isMobile(userAgent).any);
         
         this.props.initializeApp(isMobile(userAgent).any);
+        console.log(`TESTSFSDLKJFSDKLFJSD!!!`);
     }
 
     render() {

@@ -2,7 +2,7 @@
   "name": "edh-salt-index",
   "description": "EDH Salt Index - Your comprehensive salt mine for friendship destruction!",
   "version": "0.0.0",
-  "proxy": "http://localhost:3333",
+  "proxy": "http://localhost",
   "main": "src/index.js",
   "dependencies": {
     "@adobe/react-spectrum": "^3.18.0",
@@ -18,6 +18,8 @@
   "scripts": {
     "build": "cross-env NODE_ENV=production webpack --mode production",
     "start": "cross-env NODE_ENV=dev webpack-dev-server --mode development --open --hot --compress",
+    "deploy:staging" : "npm run build && aws s3 sync build/ s3://commandersalt-staging && aws cloudfront create-invalidation --distribution-id E3B1Y6ZL0XQJGP --paths \"/*\"", 
+    "deploy:production" : "npm run build && aws s3 sync build/ s3://commandersalt-production && aws cloudfront create-invalidation --distribution-id E138SFU378E9SI --paths \"/*\"", 
     "dev": "webpack-cli serve --mode development",
     "watch": "webpack --watch"
   },
