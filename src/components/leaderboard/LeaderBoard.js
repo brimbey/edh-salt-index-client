@@ -115,6 +115,7 @@ export function LeaderBoard() {
       height="100%"
       style={
         {
+          'display': 'inline-block',
           'overflow-y': 'scroll'
       }
       }

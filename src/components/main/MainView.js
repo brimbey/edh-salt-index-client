@@ -1,10 +1,12 @@
 import React from 'react';
 import { SubmitForm } from "../submitform/SubmitForm";
 import { Preview } from "../preview/Preview";
-import { Flex, View, Header, Divider, Text } from "@adobe/react-spectrum";
+import { Flex, View, Header, Divider, Text, ActionButton } from "@adobe/react-spectrum";
 import { LeaderBoard } from '../leaderboard/LeaderBoard';
 import { ImportStatusBar } from '../importStatusBar/ImportStatusBar';
+import ShowMenu from '@spectrum-icons/workflow/ShowMenu';
 import isMobile from 'ismobilejs';
+import './MainView.css';
 
 export class MainView extends React.Component {
     getUrlParam = () => {
@@ -26,20 +28,24 @@ export class MainView extends React.Component {
 
     render() {
         return (
-            <View height="100%">
-                <View style={{position: 'absolute', top: 0}}>
-                    <Header>
-                        <Text size="L">EDH Salt Index</Text>
-                    </Header>
-                    <Divider size="M" />
-                </View>
+            <Flex direction="column" height="100%" width="100%">
+                <Flex direction="row" width="100%" gap="size-130" margin="5px">
+                    <ActionButton 
+                        type="reset"
+                        onPress={() => {}}
+                        width="size-150">
+                            <ShowMenu />
+                    </ActionButton>
+                    <Text UNSAFE_className="HeaderText">COMMANDERSALT.COM - Your home for the saltiest MtG Commander decks!</Text>
+                </Flex>
+                <Divider size="M" />
                 <div style={{height: "25px"}} />
-                <View alignItems="center" height="100%">
+                {/* <View alignItems="center"> */}
                     <Flex 
                         direction="column"  
                         alignItems="center"
-                        margin="size-200"
                         height="100%"
+                        margin="size-200"
                         gap="size-100">
                         <img src="resources/chef-kiss.png" width="100px" alt="MMM SALT!" />
                         <div style={{height: "50px"}} />
@@ -63,8 +69,7 @@ export class MainView extends React.Component {
                             </Header>
                         </View>
                     </Flex>
-                </View>
-            </View>
+            </Flex>
         )
     }
 }
