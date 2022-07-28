@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import { MainView } from './MainView';
-import { initializeLeaderBoard } from '../../data/redux/slices/leaderboardSlice';
+import { fetchAll } from '../../data/redux/slices/leaderboardSlice';
 import { importDeckList, importPercentageDone, isImporting } from '../../data/redux/slices/importSlice';
 import { isPreviewShowing } from '../../data/redux/slices/previewSlice';
 import { setIsMobile } from '../../data/redux/slices/appSlice';
@@ -26,7 +26,7 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(setIsMobile(isMobile));
   },
   refreshLeaderboard() {
-    dispatch(initializeLeaderBoard());
+    dispatch(fetchAll());
   },
   importDeckList(uri) {
     dispatch(importDeckList(uri));

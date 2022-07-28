@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {Cell, Column, Row, TableView, TableBody, TableHeader, Flex} from '@adobe/react-spectrum'
-import { selectLeaderboardList, setForceLoad, getLeaderboardList, setIsUpdate } from '../../data/redux/slices/leaderboardSlice';
+import { selectLeaderboardList, setForceLoad, getLeaderboardList, setIsUpdate, fetchAll } from '../../data/redux/slices/leaderboardSlice';
 import './LeaderBoard.css';
 import { setPreviewDeck } from '../../data/redux/slices/previewSlice';
 import {useAsyncList} from '@react-stately/data';
@@ -53,27 +53,44 @@ export const getColumnRenderer = ((item) => {
 
 export function LeaderBoard() {
   const dispatch = useDispatch();
-  const list = useSelector(getLeaderboardList);
-  const items = useSelector(selectLeaderboardList);
-  const lastBatchLoaded = useSelector((state) => state?.leaderboard?.lastBatchLoaded || []);
-  const isForceLoad = useSelector((state) => state?.leaderboard?.forceLoad);
-  const isUpdate = useSelector((state) => state?.leaderboard?.isUpdate);
+  const listItems = useSelector((state) => state?.leaderboard?.listItems);
+  const nextCursor = useSelector((state) => state?.leaderboard?.nextCursor);
+  const isFetching = useSelector((state) => state?.leaderboard?.isFetching);
+  const loadingState = useSelector((state) => state?.leaderboard?.loadingState);
   const isMobile = useSelector((state) => state?.app?.isMobile);
-  
+
   const handleLeaderboardSelectionChange = (evn) => {
       try {
           const {currentKey} = evn;
-          const selectedDeck = items.filter((value, index) => {
+          const selectedDeck = listItems.filter((value, index) => {
               return value.id === currentKey;
           })?.[0];
           
           dispatch(setPreviewDeck(selectedDeck));
       } catch (error) {
           console.log(`error :: ${error}`);
-      }
-      
+      }    
   }
+
+  const handleLoadMore = (evn) => {
+    if (!isFetching && nextCursor !== null) {
+      dispatch(fetchAll(nextCursor));
+    }
+  }
+
+  const initialSortDescriptor = {
+    column: 'salt',
+    direction: 'descending',
+  };
   
+  const sort = async (inputObject) => {
+    return {
+      items: inputObject?.items?.sort((a, b) => {
+        return parseFloat(b?.salt) - parseFloat(a?.salt);
+      })
+    };
+  }
+
   let columns = [
     {name: 'USER', uid: 'authorAvatarUrl', maxWidth: 25},
     {name: 'Commander(s)', uid: 'commanders'},
@@ -89,24 +106,6 @@ export function LeaderBoard() {
     {name: '', uid: 'salt', width: 125}
   );
   
-  const asyncList = useAsyncList(list);
-
-  // TODO: fix this abomination
-  if (isForceLoad) {
-    const item = lastBatchLoaded[0];
-    const cached = asyncList.getItem(item.id);
-    
-    if (!cached) {
-      asyncList.append(lastBatchLoaded[0]);
-    } else if (isUpdate) {
-      asyncList.update(item.id, item);
-      dispatch(setIsUpdate(false));
-    } else {
-      asyncList.sort();
-      dispatch(setForceLoad(false));
-    }
-  };
-
   return (
     <Flex 
       gap="size-0"
@@ -128,8 +127,8 @@ export function LeaderBoard() {
         selectionMode="single" 
         selectionStyle="highlight"
         onSelectionChange={handleLeaderboardSelectionChange}
-        sortDescriptor={asyncList?.sortDescriptor}
-        onSortChange={asyncList?.sort}
+        sortDescriptor={initialSortDescriptor}
+        onSortChange={sort}
       >
         <TableHeader columns={columns}>
           {column => (
@@ -145,9 +144,9 @@ export function LeaderBoard() {
           )}
         </TableHeader>
         <TableBody 
-          items={asyncList?.items || []}
-          loadingState={asyncList?.loadingState}
-          onLoadMore={asyncList?.loadMore}
+          items={listItems}
+          loadingState={loadingState}
+          onLoadMore={handleLoadMore}
         >
           {item => (
             <Row>
