@@ -4,10 +4,13 @@ import { ProgressBar } from "@adobe/react-spectrum";
 
 export function ImportStatusBar() {
   const isRefreshing = useSelector((state) => state.import.isRefreshing);
-  const progress = (!isRefreshing) ? useSelector((state) => state.import.importing.percentageLoaded) : useSelector((state) => state.import.refreshing.percentageLoaded);
-  const cardname = (!isRefreshing) ? useSelector((state) => state.import.importing.current) : useSelector((state) => state.import.refreshing.current);
+  const progress = useSelector((state) => state.import.importing.percentageLoaded);
+  const isRefreshingProgress = useSelector((state) => state.import.refreshing.percentageLoaded);
+
+  const cardname = useSelector((state) => state.import.importing.current);
+  const isRefreshingCardname = useSelector((state) => state.import.refreshing.current);
 
   return (
-    <ProgressBar value={progress} label={cardname}  width="100%" />
+    <ProgressBar value={(isRefreshing) ? isRefreshingProgress : progress} label={(isRefreshing) ? isRefreshingCardname : cardname}  width="100%" />
   );
 }

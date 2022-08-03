@@ -105,6 +105,14 @@ export function LeaderBoard() {
   columns.push(
     {name: '', uid: 'salt', width: 125}
   );
+
+  const flexWrapperStyle = {
+    display: 'inline-block',
+  }
+  
+  if (!isMobile) {
+    flexWrapperStyle["overflow-y"] = "scroll";
+  }
   
   return (
     <Flex 
@@ -113,12 +121,11 @@ export function LeaderBoard() {
       maxWidth="1000px"
       width="100%"
       height="100%"
-      style={
-        {
-          'display': 'inline-block',
-          'overflow-y': 'scroll'
-      }
-      }
+      // style={
+      //   {
+      //     'display': 'inline-block',
+      //   }
+      // }
     >
       <TableView
         aria-label="All time salt index"
@@ -145,6 +152,7 @@ export function LeaderBoard() {
           )}
         </TableHeader>
         <TableBody 
+        id="FUKINGTABLEVIEW"
           items={listItems}
           loadingState={loadingState}
           onLoadMore={handleLoadMore}

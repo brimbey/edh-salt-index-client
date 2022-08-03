@@ -5,7 +5,6 @@ export const leaderboardSlice = createSlice({
   name: 'leaderboard',
   initialState: {
     listItems: [],
-    lastBatchLoaded: [],
     nextCursor: null,
     isFetching: false,
     loadingState: `idle`,
@@ -17,7 +16,7 @@ export const leaderboardSlice = createSlice({
     setNextCursor: (state, action) => {
       state.nextCursor = action.payload;
     },
-    setLastBatchLoaded: (state, action) => {
+    addNewItems: (state, action) => {
       const { items, cursor, type } = action.payload;
       
       state.nextCursor = cursor || null;
@@ -28,6 +27,19 @@ export const leaderboardSlice = createSlice({
 
       state.isFetching = false;
       state.loadingState = `idle`;
+    },
+    updateExistingItem: (state, action) => {
+      const updatedItem = action.payload;
+      state.listItems = state.listItems.map((item) => {
+        if (item.id === updatedItem.id) {
+          return updatedItem;
+        }
+        return item;
+      });
+
+      state.listItems = state.listItems.sort((a, b) => {
+        return parseFloat(b?.salt) - parseFloat(a?.salt);
+      });
     },
     setLeaderboardIsFetching: (state, action) => {
       state.isFetching = action.payload.isFetching;
@@ -45,7 +57,7 @@ export const isLeaderboardFetching = (state) => state?.leaderboard?.isFetching |
 export const getNextCursor = (state) => state?.leaderboard?.nextCursor || null;
 
 // Action creators are generated for each case reducer function
-export const { setLeaderboardItems, setNextCursor, setLastBatchLoaded, setLeaderboardIsFetching } = leaderboardSlice.actions;
+export const { setLeaderboardItems, setNextCursor, addNewItems, setLeaderboardIsFetching, updateExistingItem } = leaderboardSlice.actions;
 
 export const fetchAll = (cursor) => (dispatch) => {
       cursor = cursor !== -1 ? cursor : null;
@@ -60,7 +72,7 @@ export const fetchAll = (cursor) => (dispatch) => {
       DynamoConnector.getLeaderboard(
         cursor,
         (results) => {
-          dispatch(setLastBatchLoaded({
+          dispatch(addNewItems({
             items: results.items,
             // cursor: results?.lastEvaluatedKey ? results.lastEvaluatedKey : null,
             cursor: results?.lastEvaluatedKey ? results.lastEvaluatedKey : null,
@@ -70,7 +82,7 @@ export const fetchAll = (cursor) => (dispatch) => {
 };
 
 export const addNewDeckToLeaderboard = (deck) => (dispatch) => {
-  dispatch(setLastBatchLoaded({
+  dispatch(addNewItems({
     items: [ deck ],
     // cursor: results?.lastEvaluatedKey ? results.lastEvaluatedKey : null,
     cursor: getNextCursor(),
@@ -79,12 +91,7 @@ export const addNewDeckToLeaderboard = (deck) => (dispatch) => {
 }
 
 export const handleUpdatedDeck = (deck) => (dispatch) => {
-  dispatch(setLastBatchLoaded({
-    items: [ deck ],
-    // cursor: results?.lastEvaluatedKey ? results.lastEvaluatedKey : null,
-    cursor: getNextCursor(),
-    type: 'update',
-  }));
+  dispatch(updateExistingItem(deck));
 }
 
 export default leaderboardSlice.reducer;

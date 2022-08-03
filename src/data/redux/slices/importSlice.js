@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { DynamoConnector } from '../../DynamoConnector';
+import { getAppStats } from './appSlice';
 import { addNewDeckToLeaderboard, handleUpdatedDeck } from './leaderboardSlice';
 import { setPreviewDeck } from './previewSlice';
 
@@ -53,6 +54,7 @@ export const importDeckList = (url) => (dispatch) => {
       dispatch(setImportingPercentage(0));
       dispatch(addNewDeckToLeaderboard(deck));
       dispatch(setPreviewDeck(deck));
+      dispatch(getAppStats());
     }, 
     (error) => {
       dispatch(setIsImporting(false));

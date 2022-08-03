@@ -9,3 +9,8 @@
     left: 5px;
     top: 3px;
 }
+
+#FUKINGTABLEVIEW {
+    /* overflow: visible; */
+    display:none;
+}

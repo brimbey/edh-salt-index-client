@@ -1,8 +1,14 @@
+import { toast } from "react-toastify";
+
 const getDomainPrefix = () => {
     const href = window.location.href;
     console.log(`window.location.href :: ${window.location.href}`);
 
     if (href.includes(`localhost`)) {
+        if (href.includes(`useStaging=true`)) {
+            return `https://staging-api.commandersalt.com`;    
+        }
+
         return `http://localhost:3333`;
     } else if (href.includes(`staging`)) {
         return `https://staging-api.commandersalt.com`;
@@ -12,6 +18,18 @@ const getDomainPrefix = () => {
 }
 
 export const DynamoConnector = {
+  getStats: async (callback) => {
+    let fetchUri = `${getDomainPrefix()}/stats`;
+
+    const results = await (await fetch(fetchUri, {
+        method: "GET",
+        headers: {
+            "Content-type": "application/json;charset=UTF-8",
+        }
+      })).json();
+
+    callback(results);
+  },
   getLeaderboard: async (cursor, callback) => {
     let fetchUri = `${getDomainPrefix()}/leaderboard`;
 
@@ -31,7 +49,18 @@ export const DynamoConnector = {
   },
   importDeckList: async (url, statusCallback, doneCallback, errorCallback) => {
     try {
-        let response = await (await fetch(`${getDomainPrefix()}/import?url=${url}`)).json()
+        const request = await fetch(`${getDomainPrefix()}/import?url=${url}`, {
+            method: "GET",
+            headers: {
+                "Content-type": "application/json;charset=UTF-8",
+            }
+          });
+        const response = await request.json()
+
+        if (request.status !== 200) {
+            throw response;
+        }   
+
         const commanders = Object.keys(response?.deck?.commanders);
         let saltTotal = 0;
         const nodes = response.deck.cards;
@@ -47,7 +76,12 @@ export const DynamoConnector = {
             const cardname = cardnameList[i];
             statusCallback({type: `card`, card: cardname, percentage: Math.floor((i / cardnameList.length) * 100)});
 
-            let data = await (await fetch(`${getDomainPrefix()}/card?card=${cardname}`)).json();
+            let data = await (await fetch(`${getDomainPrefix()}/card?card=${encodeURIComponent(cardname)}`, {
+                method: "GET",
+                headers: {
+                    "Content-type": "application/json;charset=UTF-8",
+                }
+              })).json();
             if (data?.salt) {
                 cardList.push({
                     name: cardname,
@@ -67,8 +101,8 @@ export const DynamoConnector = {
                 commanders,
                 title: response?.deck?.name,
                 salt: saltTotal,
-                source: `moxfield`,
-                authorProfileUrl: `https://www.moxfield.com/users/${response?.deck?.author?.userName}`,
+                source: response?.deck?.source,
+                authorProfileUrl: response?.deck?.author?.url,
             })
         })).json();
 
@@ -81,6 +115,7 @@ export const DynamoConnector = {
     } catch (error) {
         console.log(error);
         errorCallback(error);
+        toast(`${error.message}`);
     }
   }
 };
