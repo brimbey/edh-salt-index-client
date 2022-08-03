@@ -1,3 +1,4 @@
+/* eslint-disable no-loop-func */
 import { toast } from "react-toastify";
 
 const getDomainPrefix = () => {
@@ -47,8 +48,50 @@ export const DynamoConnector = {
 
     callback(results);
   },
+  fetchCardInList: async (cardname, finishedCallback) => {
+    try {
+        let response = null;
+        try {
+            await (
+                response = await fetch(`${getDomainPrefix()}/card?card=${encodeURIComponent(cardname)}`, {
+                    method: "GET",
+                    headers: {
+                        "Content-type": "application/json;charset=UTF-8",
+                    }
+                })
+            )
+        } catch (error) {
+            // sometimes the response fails... try one more time just to be sure
+            response = await fetch(`${getDomainPrefix()}/card?card=${encodeURIComponent(cardname)}`, {
+                method: "GET",
+                headers: {
+                    "Content-type": "application/json;charset=UTF-8",
+                }
+            })
+        }
+
+        await response.json().then((data) => {
+            finishedCallback(data);
+        })
+    } catch (error) {
+        console.log(`failed to get ${cardname}`);
+        finishedCallback({})
+    }
+  },
   importDeckList: async (url, statusCallback, doneCallback, errorCallback) => {
     try {
+        const cardList = [];
+        const cardnameList = [];
+        let saltTotal = 0;
+
+        statusCallback(
+            {
+                type: `card`, 
+                card: 'Loading...', 
+                percentage: 1,
+            }
+        );
+
         const request = await fetch(`${getDomainPrefix()}/import?url=${url}`, {
             method: "GET",
             headers: {
@@ -62,35 +105,35 @@ export const DynamoConnector = {
         }   
 
         const commanders = Object.keys(response?.deck?.commanders);
-        let saltTotal = 0;
         const nodes = response.deck.cards;
         
-        const cardList = [];
-        const cardnameList = [];
-
         Object.keys(nodes).forEach((cardname) => {
             cardnameList.push(cardname);
         })
 
-        for (let i = 0; i < cardnameList.length; i++) {
-            const cardname = cardnameList[i];
-            statusCallback({type: `card`, card: cardname, percentage: Math.floor((i / cardnameList.length) * 100)});
-
-            let data = await (await fetch(`${getDomainPrefix()}/card?card=${encodeURIComponent(cardname)}`, {
-                method: "GET",
-                headers: {
-                    "Content-type": "application/json;charset=UTF-8",
-                }
-              })).json();
+        const promises = [];
+        const fetchFinishedHandler = async (data) => {
             if (data?.salt) {
-                cardList.push({
-                    name: cardname,
-                    salt: data.salt,
-                });
+                cardList.push(data);
 
+                statusCallback(
+                    {
+                        type: `card`, 
+                        card: data.name, 
+                        percentage: Math.floor((cardList.length / cardnameList.length) * 100)
+                    }
+                );
+        
                 saltTotal = saltTotal + parseFloat(data.salt);
             }
         }
+
+        for (let i = 0; i < cardnameList.length; i++) {
+            const cardname = cardnameList[i];
+            promises.push(DynamoConnector.fetchCardInList(cardname, fetchFinishedHandler));
+        }
+
+        await Promise.all(promises);
 
         const persistResponse = await (await fetch(`${getDomainPrefix()}/persist`, {
             method: "POST",
