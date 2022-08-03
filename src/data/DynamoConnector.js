@@ -116,13 +116,23 @@ export const DynamoConnector = {
             if (data?.salt) {
                 cardList.push(data);
 
-                statusCallback(
-                    {
-                        type: `card`, 
-                        card: data.name, 
-                        percentage: Math.floor((cardList.length / cardnameList.length) * 100)
-                    }
-                );
+                if (cardList.length !== cardnameList.length) {
+                    statusCallback(
+                        {
+                            type: `card`, 
+                            card: data.name, 
+                            percentage: Math.floor((cardList.length / cardnameList.length) * 100)
+                        }
+                    );
+                } else {
+                    statusCallback(
+                        {
+                            type: `card`, 
+                            card: `Finalizing...`, 
+                            percentage: 100,
+                        }
+                    );
+                }
         
                 saltTotal = saltTotal + parseFloat(data.salt);
             }
@@ -139,7 +149,7 @@ export const DynamoConnector = {
             method: "POST",
             body: JSON.stringify({
                 url: response?.deck?.url,
-                author: response?.deck?.author?.userName,
+                author: response?.deck?.author?.username,
                 authorAvatarUrl: response?.deck?.author?.profileImageUrl,
                 commanders,
                 title: response?.deck?.name,
