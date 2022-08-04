@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import {Cell, Column, Row, TableView, TableBody, TableHeader, Flex} from '@adobe/react-spectrum'
+import {Cell, Column, Row, TableView, TableBody, TableHeader, Flex, View} from '@adobe/react-spectrum'
 import { selectLeaderboardList, setForceLoad, getLeaderboardList, setIsUpdate, fetchAll } from '../../data/redux/slices/leaderboardSlice';
 import './LeaderBoard.css';
 import { setPreviewDeck } from '../../data/redux/slices/previewSlice';
@@ -115,28 +115,16 @@ export function LeaderBoard() {
   }
   
   return (
-    <Flex 
-      gap="size-0"
-      margin="size-0"
-      maxWidth="1000px"
-      width="100%"
-      height="100%"
-      // style={
-      //   {
-      //     'display': 'inline-block',
-      //   }
-      // }
-    >
       <TableView
         aria-label="All time salt index"
         density='compact'
-        height="100%"
-        width="100%"
         selectionMode="single" 
         selectionStyle="highlight"
         onSelectionChange={handleLeaderboardSelectionChange}
         sortDescriptor={initialSortDescriptor}
         onSortChange={sort}
+        maxHeight="calc(100vh - 450px"
+        width="100"
       >
         <TableHeader columns={columns}>
           {column => (
@@ -152,7 +140,6 @@ export function LeaderBoard() {
           )}
         </TableHeader>
         <TableBody 
-        id="FUKINGTABLEVIEW"
           items={listItems}
           loadingState={loadingState}
           onLoadMore={handleLoadMore}
@@ -164,6 +151,5 @@ export function LeaderBoard() {
           )}
         </TableBody>
       </TableView>
-    </Flex>
   );
 }

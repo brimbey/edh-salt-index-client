@@ -9,6 +9,10 @@ export const appSlice = createSlice({
     stats: {
       total: 0,
     },
+    route: {
+      uri: '',
+      title: 'Leaderboard',
+    }
   },
   reducers: {
     setWindowWidth: (state, action) => {
@@ -19,12 +23,16 @@ export const appSlice = createSlice({
     },
     setStats: (state, action) => {
       state.stats.total = action.payload?.Items?.[0]?.totalCount;
+    },
+    updateRoute: (state, action) => {
+      state.route.uri = action.payload.uri;
+      state.route.title = action.payload.title;
     }
   },
 });
 
 // Actions
-export const { setWindowWidth, setIsMobile, setStats } = appSlice.actions;
+export const { setWindowWidth, setIsMobile, setStats, updateRoute } = appSlice.actions;
 
 // Selectors
 export const getAppStats = () => (dispatch) => {
@@ -33,6 +41,28 @@ export const getAppStats = () => (dispatch) => {
       dispatch(setStats(results));
   });
 };
+
+export const setAppRoute = (route) => (dispatch) => {
+  if (route) {
+    let newRoute = '';
+    let newTitle = '';
+
+    switch (route) {
+      case '/why':
+        newRoute = `/why`;
+        newTitle = `Why?!`;
+        break;
+      default: 
+        newRoute = `/`;
+        newTitle = `Leaderboard`;
+    }
+
+    dispatch(updateRoute({
+      uri: newRoute,
+      title: newTitle,
+    }))
+  }
+}
 
 
 export default appSlice.reducer;

@@ -1,24 +1,59 @@
 import React from 'react';
 import './App.css';
-import { defaultTheme, Provider as ProviderV3 } from '@adobe/react-spectrum';
-import { ToastContainer, toast } from 'react-toastify';
+import { defaultTheme, Flex, Provider as ProviderV3, View } from '@adobe/react-spectrum';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import FullHeight from 'react-full-height';
 import { Provider } from 'react-redux';
 import MainView from './components/main/MainViewContainer';
 import store from './data/redux/store/AppStore';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route
+} from 'react-router-dom';
+import { HeaderBar } from './components/headerBar/HeaderBar';
+import { Why } from './components/why/Why';
 
 class App extends React.Component {
   render() {
     return (
-      <FullHeight className="App-body">
         <Provider store={store}>
-          <ProviderV3 height="100%" width="100%" theme={defaultTheme} colorScheme="dark">
-            <ToastContainer />
-            <MainView />
-          </ProviderV3>
-        </Provider>
-      </FullHeight>
+          <ProviderV3 theme={defaultTheme} colorScheme="dark">
+          {/* <FullHeight> */}
+            <Router>
+              <ToastContainer />
+              <Flex
+                id="AppContainer"
+                width="100vw"
+                height="100vh"
+                direction="column">
+                <HeaderBar />
+                <Flex
+                  id="ContentContainer"
+                  direction="row"
+                  height="100%"
+                  width="100%"
+                  justifyContent="space-around"
+                >
+                  <View
+                    id="CenterContentContainer"
+                    direction="column"
+                    height="auto"
+                    width="100%"
+                    maxWidth="1200px"
+                  >
+                    <Routes>
+                      <Route exact path='/' element={< MainView />}></Route>
+                      <Route exact path='/why' element={< Why />}></Route>
+                    </Routes>
+                  </View>
+                </Flex>
+              </Flex>
+          </Router>
+            {/* </FullHeight> */}
+        </ProviderV3>
+      </Provider>
     );
   }
 }
