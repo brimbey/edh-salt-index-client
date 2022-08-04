@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {Text, Flex, DialogContainer, Divider, Well, ActionButton} from '@adobe/react-spectrum'
+import {Text, Flex, DialogContainer, Dialog, Divider, Well, ActionButton, View} from '@adobe/react-spectrum'
 import './Preview.css';
 import LinkOut from '@spectrum-icons/workflow/LinkOut';
 import Close from '@spectrum-icons/workflow/Close';
@@ -14,6 +14,7 @@ export function Preview() {
     const deck = useSelector((state) => state.preview.previewDeck);
     const isRefreshing = useSelector((state) => state.import.isRefreshing);
     const isImporting = useSelector((state) => state.import.isImporting);
+    const isMobile = useSelector((state) => state.app.isMobile);
 
     const dispatch = useDispatch();
 
@@ -46,56 +47,74 @@ export function Preview() {
     const salt = deck?.salt;
     const author = deck?.author;
     const commanders = deck?.commanders?.toString().replace(`,`, `\n`);
+    const width = isMobile ? "size-4000" : 600;
+    const source = deck?.source;
 
     return (
         <DialogContainer type='modal' isDismissable onDismiss={() => dispatch(setPreviewIsShowingFalse())}>
-            {/* <Dialog 
-                width="480px"> */}
-                <div className='PreviewContainer' width="100%">
-                    <Flex direction="column" width="size-4000" margin="10px">
-                        <Flex direction="row" gap="size-100" width="100%" justifyContent="right">
-                            <ActionButton 
-                                type="reset"
-                                alignSelf="flex-end"
-                                isDisabled={isImporting || isRefreshing}
-                                onPress={() => dispatch(doRefresh(deck.url))}><Refresh /></ActionButton>
-                            <ActionButton 
-                                type="reset"
-                                alignSelf="flex-end"
-                                onPress={() => dispatch(setPreviewIsShowingFalse())}><Close /></ActionButton>
-                        </Flex>
+            {/* <Dialog UNSAFE_className="PreviewModal"> */}
+                <div className='PreviewContainer' style={{ width: width }}>
+                    <Flex direction="column" width="size-4000">
+                        <View UNSAFE_className='PreviewContainerHeader' padding="10px">
+                            <Flex direction="row" gap="size-100" width="100%">
+                                <Text UNSAFE_className="TitleText">{title}</Text>
+                                <Flex direction="row" gap="size-100" justifyContent="right">
+                                    <ActionButton 
+                                        type="reset"
+                                        alignSelf="flex-end"
+                                        isDisabled={isImporting || isRefreshing}
+                                        onPress={() => dispatch(doRefresh(deck.url))}><Refresh /></ActionButton>
+                                    <ActionButton 
+                                        type="reset"
+                                        alignSelf="flex-end"
+                                        onPress={() => dispatch(setPreviewIsShowingFalse())}><Close /></ActionButton>
+                                </Flex>
+                            </Flex>
+                        </View>
                         <Flex direction="row" gap="size-130" marginTop="10px">
                             <Flex direction="column">
                                 <img src={avatarUrl || `/resources/blank-user-avatar.png`} width="100" alt="avatar" />
                                 <Text UNSAFE_className="AuthorText">{author}</Text>
                             </Flex>
                             <Flex direction="column" width="100%">
-                                <Text UNSAFE_className="TitleText">{title}</Text>
-                                
-                                <Text UNSAFE_className="CommanderText">Commander(s):</Text>
+                                <Text UNSAFE_className="PropertyHeader">Commander(s):</Text>
                                 <div style={{height: '10px'}} />
-                                <Text UNSAFE_className="CommanderText">{commanders}</Text>
+                                <Text UNSAFE_className="PropertyLabel">{commanders}</Text>
                                 <div style={{height: '100%'}} />
-                                <Divider size="M" />
-                                {isRefreshing
-                                    ?   <div style={{marginTop: '5px'}}>
-                                            <ImportStatusBar paddingTop="10px" />  
-                                        </div>
-                                    : <Text UNSAFE_className="SaltText">Score: {salt}</Text>
-                                }
+                                <Text UNSAFE_className="PropertyHeader">Source:</Text>
+                                <div style={{height: '10px'}} />
+                                <Text UNSAFE_className="PropertyLabel">{source}</Text>
+                                <div style={{height: '100%'}} />
                             </Flex>
                         </Flex>
                         
                         <Well alignSelf="center" width="100%">
-                            <Text UNSAFE_className="SaltText" alignSelf="center">{getSaltRating(salt)}</Text>
+                            {isRefreshing
+                                ?   <div style={{marginTop: '5px'}}>
+                                        <ImportStatusBar paddingTop="10px" />  
+                                    </div>
+                                : <Flex direction="row" width="100%" justifyContent="space-between">
+                                    <Text UNSAFE_className="SaltRating" alignSelf="center">{getSaltRating(salt)}</Text>
+                                    {/* <Well> */}
+                                        <Flex direction="column" margin="size-0" justifyContent="center">
+                                            <Text UNSAFE_className="SaltScoreHeader">SCORE</Text>
+                                            <Text UNSAFE_className="SaltScore">{salt}</Text>
+                                        </Flex>
+                                    {/* </Well> */}
+                                </Flex>
+                            }
                         </Well>
-                        <Flex direction="row" width="100%" marginTop="10px">
-                            <ActionButton 
+                        <Flex direction="row" width="100%" marginTop="10px" justifyContent="space-between">
+                            <ActionButton
+                                width="50%" 
+                                maxWidth="200px" 
                                 onPress={handleDeckLinkPress}><LinkOut/>
                                 Deck&nbsp;&nbsp;&nbsp;
                             </ActionButton>
                             <div style={{ width: '135px' }} />
                             <ActionButton 
+                                width="180px"
+                                maxWidth="180px" 
                                 alignSelf="flex-end"
                                 onPress={handleAuthorLinkPress}>
                                     <LinkOut/>

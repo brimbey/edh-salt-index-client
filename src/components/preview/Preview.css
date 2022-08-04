@@ -1,15 +1,35 @@
 .TitleText {
-    font-size: 20px;
+    font-size: 18px;
     font-weight: bold;
     align-self: flex-start;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    width: 100%;
 }
-.SaltText {
+.SaltRating {
     font-size: 15px;
     font-weight: bolder;
-    align-self: flex-end;
+    padding-left: 10px;
 }
-.CommanderText {
+.SaltScore {
+    font-size: 25px;
+    font-weight: bolder;
+    padding-right: 10px;
+    color:crimson;
+    /* align-self: center; */
+}
+.SaltScoreHeader {
+    font-size: 12px;
+    font-weight: bolder;
+    /* align-self: center; */
+}
+.PropertyHeader {
     font-size: 15px;
+    font-weight: bold;
+}
+.PropertyLabel {
+    font-size: 13px;
 }
 .AuthorText {
     font-size: 10px;
@@ -19,8 +39,35 @@
 .PreviewContainer {
     /* border-style: solid; */
     width: 350px;
-    margin: 10px;
-    padding: 10px;
+    margin: 5px;
     /* border-color: #484747; */
     /* border-width: 2px; */
+    /* padding:10px 60px; */
+   
 }
+
+.PreviewContainerHeader {
+    background: linear-gradient(to right, rgb(184, 2, 2), 30%, transparent);
+    background-repeat: no-repeat;
+    background-position: right;
+    color: white;
+  }
+
+.PreviewModal {
+    -webkit-border-radius: 25px;
+    -moz-border-radius: 25px;
+    border-radius: 25px;
+    /* background: -moz-linear-gradient(top, #28c4e3 0%, #0d5664 100%); */
+    /* text-shadow: 0 1px 2px #fff; */
+    /* background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#28c4e3), color-stop(100%,#0d5664));  */
+    /* webkit */font-size:20px
+}
+
+
+
+/* .PreviewContainer:hover {
+    -moz-box-shadow:    0 -1px 2px #fff, 0 1px 1px #666, inset 0 -1px 1px rgba(0,0,0,0.5), inset 0 -1px 1px rgba(255,255,255,0.8);
+    -webkit-box-shadow: 0 -1px 2px #fff, 0 1px 1px #666, inset 0 -1px 1px rgba(0,0,0,0.5), inset 0 -1px 1px rgba(255,255,255,0.8);
+    box-shadow:         0 -1px 2px #fff, 0 1px 1px #666, inset 0 -1px 1px rgba(0,0,0,0.5), inset 0 -1px 1px rgba(255,255,255,0.8);
+    border: solid #ccc 3px;
+} */
