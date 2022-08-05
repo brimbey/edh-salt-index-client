@@ -14,10 +14,9 @@ export function HeaderBar() {
     const dispatch = useDispatch();
 
     const isMobile = useSelector((state) => state.app.isMobile);
-    const deckCount = useSelector((state) => state?.app?.stats?.total);
     const title = useSelector((state) => state?.app?.route?.title);
     const headerClassName = (isMobile) ? "layered-image-mobile" : "layered-image";
-    const deckCountString = deckCount > 0 ? `${deckCount} salty ass decks indexed...` : ` `;
+    const headerCaption = "Let that sweet salt flow!";
 
     const handleMenuClick = (route, closeMethod) => {
         dispatch(setAppRoute(route));
@@ -30,13 +29,13 @@ export function HeaderBar() {
             width="100%"
             direction="column"  
             alignItems="center">
-            <Flex direction="row" width="100%" margin="5px" justifyContent="space-between">
+            <Flex direction="row" width="100%" margin="5px" justifyContent="space-between" height="54px">
                 <Flex direction="row">
                     <img src="resources/chef-kiss-header.png" width="40px" height="40px" alt="MMM SALT!" style={{ paddingLeft: '10px', paddingRight: '20px' }} />
                     <Text UNSAFE_className="HeaderText">COMMANDERSALT.COM</Text>
                 </Flex>
                 <span style={{ marginRight: "20px", alignSelf:"center" }} > 
-                    <DialogTrigger type="popover">
+                    <DialogTrigger type="popover" mobileType="tray" >
                         <ActionButton
                             type="reset"
                             width="size-150">
@@ -46,7 +45,8 @@ export function HeaderBar() {
                             <Dialog>
                                 <Heading UNSAFE_style={{ 'font-size': '12px', 'font-weight': 'bolder', 'color': 'red' }}>commandersalt</Heading>
                                 <Divider />
-                                <Content>
+                                <Content
+                                    minHeight="100vh">
                                     <Flex direction="column">
                                         <Link 
                                             to="/" 
@@ -70,11 +70,11 @@ export function HeaderBar() {
                 </span>
             </Flex>
             <Flex direction="column" UNSAFE_className={headerClassName}>
-                <div class="leaderboard-title">
+                <div className="leaderboard-title">
                     { title }
                 </div>
-                <div class="leaderboard-subtitle">
-                    {deckCountString}
+                <div className="leaderboard-subtitle">
+                    {headerCaption}
                 </div>
             </Flex>
         </Flex>

@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {Cell, Column, Row, TableView, TableBody, TableHeader, Flex, View} from '@adobe/react-spectrum'
 import { selectLeaderboardList, setForceLoad, getLeaderboardList, setIsUpdate, fetchAll } from '../../data/redux/slices/leaderboardSlice';
 import './LeaderBoard.css';
 import { setPreviewDeck } from '../../data/redux/slices/previewSlice';
 import {useAsyncList} from '@react-stately/data';
+// import { useWindowScrollPositions } from './ScrollPositions';
+import { useScrollPosition } from '@n8tb1t/use-scroll-position'
 
 export const getCellRenderer = ((item, columnKey) => {
   let content;
@@ -113,8 +115,58 @@ export function LeaderBoard() {
   if (!isMobile) {
     flexWrapperStyle["overflow-y"] = "scroll";
   }
+  const [headerStyle, setHeaderStyle] = useState({
+    transition: 'all 200ms ease-in'
+  })
+  
+  const [scrollYPosition, setScrollYPosition] = useState(true)
+
+useScrollPosition(({ prevPos, currPos }) => {
+  // const isUpdate = currPos.y !== prevPos.y
+  // console.log(`GOT Y :: ${currPos.y} :: ${prevPos.y}`);
+  // console.log(`--> GOT HEIGHT : ${window.innerHeight}`)
+  // const doUpdate = (Math.abs(currPos.y) - Math.abs(prevPos.y)) > 2;
+  
+  // if (doUpdate) {
+    setScrollYPosition(-1 * currPos.y)
+  // }
+}, [scrollYPosition])
+
+
+  const [windowSize, setWindowSize] = useState(0);
+  const [windowOuterSize, setWindowOuterSize] = useState(0);
+  const handleScroll = () => {
+    setWindowSize({
+      inner: window.innerHeight,
+      outer: window.outerHeight,
+    })
+  }
+
+  const innerHeight = windowSize.inner || window.innerHeight;
+  const outerHeight = windowSize.outer || window.outerHeight;
+
+  const diff = outerHeight - innerHeight
+  const maxHeight = isMobile ? `calc(100vh - 40px)` : `${innerHeight - 800}px`;
+  
+  let diffDiff = diff - scrollYPosition;
+  diffDiff = diffDiff < 50 ? 50 : diffDiff;
+  console.log(` diffDiff ${diffDiff}`);
+  
+  
+  const tableHeight = `${innerHeight - diffDiff}px`;// : "calc(100vh - 380px)";
+  console.log(` tableHeight ${tableHeight}`);
+
+  useEffect(() => {
+      window.addEventListener('resize', handleScroll, { passive: true });
+
+      return () => {
+          window.removeEventListener('resize', handleScroll);
+      };
+  }, []);
   
   return (
+    <Flex direction="row">
+      <div style={{ width: '1px', height: maxHeight }} />
       <TableView
         aria-label="All time salt index"
         density='compact'
@@ -123,8 +175,9 @@ export function LeaderBoard() {
         onSelectionChange={handleLeaderboardSelectionChange}
         sortDescriptor={initialSortDescriptor}
         onSortChange={sort}
-        maxHeight="calc(100vh - 450px"
-        width="100"
+        UNSAFE_style={{ height: tableHeight }}
+        width="100%"
+        marginBottom="40px"
       >
         <TableHeader columns={columns}>
           {column => (
@@ -151,5 +204,6 @@ export function LeaderBoard() {
           )}
         </TableBody>
       </TableView>
+      </Flex>
   );
 }

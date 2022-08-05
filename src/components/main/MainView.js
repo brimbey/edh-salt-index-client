@@ -1,8 +1,7 @@
 import React from 'react';
 import { SubmitForm } from "../submitform/SubmitForm";
 import { Preview } from "../preview/Preview";
-import { Flex, View, Header, Divider, Text } from "@adobe/react-spectrum";
-// import { Toast } from '@spectrum-web-components/toast';
+import { Flex, View } from "@adobe/react-spectrum";
 import { LeaderBoard } from '../leaderboard/LeaderBoard';
 import { ImportStatusBar } from '../importStatusBar/ImportStatusBar';
 import isMobile from 'ismobilejs';
@@ -21,15 +20,11 @@ export class MainView extends React.Component {
     componentDidMount = async () => {
         this.props.refreshLeaderboard();
         const userAgent = window.navigator['user-agent'];
-        console.log(isMobile(userAgent).any);
         
         this.props.initializeApp(isMobile(userAgent).any);
     }
 
     render() {
-        const headerClassName = this.props.isMobile ? "layered-image-mobile" : "layered-image";
-        const deckCountString = this?.props?.totalDecksCount > 0 ? `${this.props.totalDecksCount} salty ass decks indexed...` : ` `;
-
         return (
             <Flex 
                 id="MainView"
@@ -43,20 +38,13 @@ export class MainView extends React.Component {
                         : <SubmitForm listSubmitHandler={this.handleListSubmit} />// initialListUrl={param} />
                     }
                 </Flex>
-                <div style={{height: "50px"}} />
+                <div style={{height: "10px"}} />
                 {this.props.showPreview 
                     ? <Preview />  
                     : <div style={{height: "0px"}} />
                 }
                 <View width="100%">
                     <LeaderBoard selectionHandler={this.handleLeaderboardSelectionChange}  />
-                </View>
-                <div style={{height: "25px"}} />
-                <View width="100%">
-                    <Divider size="M" width="100%" />
-                    <Header>
-                        <Text size="L">-- </Text>
-                    </Header>
                 </View>
              </Flex>
         )

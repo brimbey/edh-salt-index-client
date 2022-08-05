@@ -3,8 +3,7 @@ import { toast } from "react-toastify";
 
 const getDomainPrefix = () => {
     const href = window.location.href;
-    console.log(`window.location.href :: ${window.location.href}`);
-
+    
     if (href.includes(`localhost`)) {
         if (href.includes(`useStaging=true`)) {
             return `https://staging-api.commandersalt.com`;    

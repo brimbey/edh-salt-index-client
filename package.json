@@ -8,6 +8,7 @@
     "@adobe/react-spectrum": "^3.18.0",
     "@architect/functions": "^5.1.0",
     "@architect/utils": "^3.1.2",
+    "@n8tb1t/use-scroll-position": "^2.0.3",
     "@reduxjs/toolkit": "^1.8.3",
     "cross-env": "^6.0.3",
     "crypto-js": "^4.1.1",

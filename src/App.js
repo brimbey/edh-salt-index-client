@@ -14,13 +14,14 @@ import {
 } from 'react-router-dom';
 import { HeaderBar } from './components/headerBar/HeaderBar';
 import { Why } from './components/why/Why';
+import { FooterBar } from './components/footerBar/FooterBar';
 
 class App extends React.Component {
   render() {
     return (
+      <div style={{ backgroundColor: "red" }}>
         <Provider store={store}>
           <ProviderV3 theme={defaultTheme} colorScheme="dark">
-          {/* <FullHeight> */}
             <Router>
               <ToastContainer />
               <Flex
@@ -49,11 +50,12 @@ class App extends React.Component {
                     </Routes>
                   </View>
                 </Flex>
+                <FooterBar />
               </Flex>
           </Router>
-            {/* </FullHeight> */}
         </ProviderV3>
       </Provider>
+      </div>
     );
   }
 }

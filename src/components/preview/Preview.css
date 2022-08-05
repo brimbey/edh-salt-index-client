@@ -29,6 +29,7 @@
     font-weight: bold;
 }
 .PropertyLabel {
+    white-space: pre-line;
     font-size: 13px;
 }
 .AuthorText {
@@ -39,7 +40,7 @@
 .PreviewContainer {
     /* border-style: solid; */
     width: 350px;
-    margin: 5px;
+    /* margin: 5px; */
     /* border-color: #484747; */
     /* border-width: 2px; */
     /* padding:10px 60px; */
@@ -47,7 +48,7 @@
 }
 
 .PreviewContainerHeader {
-    background: linear-gradient(to right, rgb(184, 2, 2), 30%, transparent);
+    background: linear-gradient(to right, rgb(72, 83, 102), 30%, transparent);
     background-repeat: no-repeat;
     background-position: right;
     color: white;
