@@ -27,7 +27,7 @@ export class SubmitForm extends React.Component {
                 label="Paste the URL for your decklist here (currently only Moxfield is supported):" 
                 onChange={this.handleOnChange} 
                 width="100%" 
-                autoFocus={true} 
+                // autoFocus={true} 
               />
               <Button onPress={this.handleOnPress} >
                 <Text>Submit&nbsp;&nbsp;&nbsp;</Text>

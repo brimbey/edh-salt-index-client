@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import {Cell, Column, Row, TableView, TableBody, TableHeader, Flex, View} from '@adobe/react-spectrum'
+import {Cell, Column, Row, TableView, Text, TableBody, TableHeader, Flex, View} from '@adobe/react-spectrum'
 import { selectLeaderboardList, setForceLoad, getLeaderboardList, setIsUpdate, fetchAll } from '../../data/redux/slices/leaderboardSlice';
 import './LeaderBoard.css';
 import { setPreviewDeck } from '../../data/redux/slices/previewSlice';
@@ -115,57 +115,53 @@ export function LeaderBoard() {
   if (!isMobile) {
     flexWrapperStyle["overflow-y"] = "scroll";
   }
-  const [headerStyle, setHeaderStyle] = useState({
-    transition: 'all 200ms ease-in'
-  })
+
   
   const [scrollYPosition, setScrollYPosition] = useState(true)
-
-useScrollPosition(({ prevPos, currPos }) => {
-  // const isUpdate = currPos.y !== prevPos.y
-  // console.log(`GOT Y :: ${currPos.y} :: ${prevPos.y}`);
-  // console.log(`--> GOT HEIGHT : ${window.innerHeight}`)
-  // const doUpdate = (Math.abs(currPos.y) - Math.abs(prevPos.y)) > 2;
-  
-  // if (doUpdate) {
-    setScrollYPosition(-1 * currPos.y)
-  // }
-}, [scrollYPosition])
-
-
   const [windowSize, setWindowSize] = useState(0);
-  const [windowOuterSize, setWindowOuterSize] = useState(0);
-  const handleScroll = () => {
+
+  useScrollPosition(({ prevPos, currPos }) => {
     setWindowSize({
       inner: window.innerHeight,
-      outer: window.outerHeight,
+      outer: document.body.scrollHeight,
+    })
+    setScrollYPosition(-1 * currPos.y)
+  }, [scrollYPosition])
+
+
+  
+  const handleResize = () => {
+    setWindowSize({
+      inner: window.innerHeight,
+      outer: document.body.scrollHeight,
     })
   }
 
-  const innerHeight = windowSize.inner || window.innerHeight;
-  const outerHeight = windowSize.outer || window.outerHeight;
+  const innerHeight = windowSize.inner || window.innerHeight;// || window.innerHeight;
+  const outerHeight = windowSize.outer || document.body.scrollHeight;
 
-  const diff = outerHeight - innerHeight
-  const maxHeight = isMobile ? `calc(100vh - 40px)` : `${innerHeight - 800}px`;
+  const diff = outerHeight - innerHeight;
+  const maxHeight = innerHeight;
   
   let diffDiff = diff - scrollYPosition;
-  diffDiff = diffDiff < 50 ? 50 : diffDiff;
-  console.log(` diffDiff ${diffDiff}`);
+  diffDiff = diffDiff < 0 ? 0 : diffDiff;
   
-  
-  const tableHeight = `${innerHeight - diffDiff}px`;// : "calc(100vh - 380px)";
-  console.log(` tableHeight ${tableHeight}`);
+  const tableHeight = `${innerHeight - diffDiff - 50}px`;// : "calc(100vh - 380px)";
 
   useEffect(() => {
-      window.addEventListener('resize', handleScroll, { passive: true });
+      window.addEventListener('resize', handleResize, { passive: true });
 
       return () => {
-          window.removeEventListener('resize', handleScroll);
+          window.removeEventListener('resize', handleResize);
       };
   }, []);
   
   return (
     <Flex direction="row">
+      {/* <Flex direction="column">
+        <Text>i: {innerHeight}</Text>
+        <Text>s: {document.body.scrollHeight}</Text>
+      </Flex> */}
       <div style={{ width: '1px', height: maxHeight }} />
       <TableView
         aria-label="All time salt index"

@@ -26,20 +26,36 @@ export function Preview() {
         window.open(deck.url, `_blank`);
       }
 
-    const getSaltRating = (val) => {
+    const getSaltGrade = (val) => {
         if (val < 10) {
-            return "Grade F: WHERE IS THE SALT?!";
+            return "Grade: F";
         } else if (val < 30) {
-            return "Grade D: Under seasoned";
+            return "Grade: D";
         } else if (val < 40) {
-            return "Grade C: Pass the salt";
+            return "Grade: C";
         } else if (val < 60) {
-            return "Grade B: Well seasoned";
+            return "Grade: B";
         } else if (val < 80) {
-            return "Grade A: Completely balanced!";
+            return "Grade: A";
         }
 
-        return "Grade A+: PERFECTION";
+        return "Grade: A+";
+    }
+
+    const getSaltRating = (val) => {
+        if (val < 10) {
+            return "WHERE IS THE SALT?!";
+        } else if (val < 30) {
+            return "Under seasoned";
+        } else if (val < 40) {
+            return "Pass the salt";
+        } else if (val < 60) {
+            return "Well seasoned";
+        } else if (val < 80) {
+            return "Completely balanced!";
+        }
+
+        return "PERFECTION";
       }
 
     const avatarUrl = deck?.authorAvatarUrl;
@@ -86,7 +102,7 @@ export function Preview() {
                             </Flex>
                         </Flex>
                     </View>
-                    <Flex direction="row" gap="size-130" marginTop="10px">
+                    <Flex direction="row" gap="size-130" marginTop="10px" UNSAFE_style={{ padding: "0px 10px 0px 10px" }}>
                         <Flex direction="column">
                             <img src={avatarUrl || `/resources/blank-user-avatar.png`} width="100" alt="avatar" />
                             <Text UNSAFE_className="AuthorText">{author}</Text>
@@ -109,7 +125,10 @@ export function Preview() {
                                     <ImportStatusBar paddingTop="10px" />  
                                 </div>
                             : <Flex direction="row" width="100%" justifyContent="space-between">
-                                <Text UNSAFE_className="SaltRating" alignSelf="center">{getSaltRating(salt)}</Text>
+                                <Flex direction="column" margin="size-0" justifyContent="center">
+                                    <Text UNSAFE_className="SaltScoreHeader">{getSaltGrade(salt)}</Text>
+                                    <Text UNSAFE_className="SaltRating">{getSaltRating(salt)}</Text>
+                                </Flex>
                                 <Flex direction="column" margin="size-0" justifyContent="center">
                                     <Text UNSAFE_className="SaltScoreHeader">SCORE</Text>
                                     <Text UNSAFE_className="SaltScore">{salt}</Text>
@@ -117,13 +136,15 @@ export function Preview() {
                             </Flex>
                         }
                     </Well>
-                    <Flex direction="row" width="100%" marginTop="10px" justifyContent="space-between">
+                    <Flex direction="row" width="100%" marginTop="10px" marginBottom="5px" justifyContent="space-between" >
                         <ActionButton
+                            margin="0px 5px 0px 10px"
                             width="50%" 
                             onPress={handleDeckLinkPress}><LinkOut/>
                             Deck&nbsp;&nbsp;&nbsp;
                         </ActionButton>
                         <ActionButton 
+                            margin="0px 10px 0px 5px"
                             width="50%"
                             alignSelf="flex-end"
                             onPress={handleAuthorLinkPress}>

@@ -59,6 +59,24 @@ export const getNextCursor = (state) => state?.leaderboard?.nextCursor || null;
 // Action creators are generated for each case reducer function
 export const { setLeaderboardItems, setNextCursor, addNewItems, setLeaderboardIsFetching, updateExistingItem } = leaderboardSlice.actions;
 
+export const doHardReload = () => (dispatch) => {
+  dispatch(setLeaderboardItems([]));
+  dispatch(setLeaderboardIsFetching({
+    isFetching: true,
+    loadingState: `loading`,
+  }));
+
+  DynamoConnector.getLeaderboard(
+    null,
+    (results) => {
+      dispatch(addNewItems({
+        items: results.items,
+        cursor: results?.lastEvaluatedKey ? results.lastEvaluatedKey : null,
+        type: null,
+      }));
+  });
+};
+
 export const fetchAll = (cursor) => (dispatch) => {
       cursor = cursor !== -1 ? cursor : null;
 
