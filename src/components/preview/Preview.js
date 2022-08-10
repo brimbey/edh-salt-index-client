@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {Text, Flex, DialogContainer, Dialog, Divider, Well, ActionButton, View} from '@adobe/react-spectrum'
+import {Text, Flex, DialogContainer, Well, ActionButton, View} from '@adobe/react-spectrum'
 import './Preview.css';
 import LinkOut from '@spectrum-icons/workflow/LinkOut';
 import Close from '@spectrum-icons/workflow/Close';
@@ -28,18 +28,18 @@ export function Preview() {
 
     const getSaltGrade = (val) => {
         if (val < 10) {
-            return "Grade: F";
+            return "F";
         } else if (val < 30) {
-            return "Grade: D";
+            return "D";
         } else if (val < 40) {
-            return "Grade: C";
+            return "C";
         } else if (val < 60) {
-            return "Grade: B";
+            return "B";
         } else if (val < 80) {
-            return "Grade: A";
+            return "A";
         }
 
-        return "Grade: A+";
+        return "A+";
     }
 
     const getSaltRating = (val) => {
@@ -78,12 +78,13 @@ export function Preview() {
 
     
     deck?.commanders?.toString().replace(`,`, `\n`);
-    const maxWidth = isMobile ? "calc(100vw - 40px)" : '600px';
+    const maxWidth = isMobile ? "calc(100vw - 40px)" : '500px';
     const wellMaxWidth = `calc(${maxWidth} - 50px)`;
     const source = deck?.source;
+    const authorUrlButtonDisabled = !deck?.authorProfileUrl;
 
     return (
-        <DialogContainer type='modal' isDismissable onDismiss={() => dispatch(setPreviewIsShowingFalse())}>
+        <DialogContainer type='modal'>
             <div className='PreviewContainer' style={{ width: maxWidth, maxWidth: "600px" }}>
                 <Flex direction="column" width="100%">
                     <View UNSAFE_className='PreviewContainerHeader' padding="10px">
@@ -124,14 +125,20 @@ export function Preview() {
                             ?   <div style={{marginTop: '5px'}}>
                                     <ImportStatusBar paddingTop="10px" />  
                                 </div>
-                            : <Flex direction="row" width="100%" justifyContent="space-between">
-                                <Flex direction="column" margin="size-0" justifyContent="center">
-                                    <Text UNSAFE_className="SaltScoreHeader">{getSaltGrade(salt)}</Text>
-                                    <Text UNSAFE_className="SaltRating">{getSaltRating(salt)}</Text>
+                            : <Flex direction="column" rowGap="30px">
+                                <Flex direction="column" margin="size-0" justifyContent="center" alignContent="center" width="100%">
+                                    <Text UNSAFE_className="SaltScoreHeader" alignSelf="center">OUR CHEF'S REMARKS</Text>
+                                    <Text UNSAFE_className="FlavorProfile" alignSelf="center">{getSaltRating(salt)}</Text>
                                 </Flex>
-                                <Flex direction="column" margin="size-0" justifyContent="center">
-                                    <Text UNSAFE_className="SaltScoreHeader">SCORE</Text>
-                                    <Text UNSAFE_className="SaltScore">{salt}</Text>
+                                <Flex direction="row" width="100%" columnGap="30px" justifyContent="center">
+                                    <Flex direction="column" margin="size-0" justifyContent="center" width="300px">
+                                        <Text UNSAFE_className="SaltScoreHeader" alignSelf="center">GRADE</Text>
+                                        <Text UNSAFE_className="SaltScore" alignSelf="center">{getSaltGrade(salt)}</Text>
+                                    </Flex>
+                                    <Flex direction="column" margin="size-0" justifyContent="center" width="300px">
+                                        <Text UNSAFE_className="SaltScoreHeader" alignSelf="center">SCORE</Text>
+                                        <Text UNSAFE_className="SaltScore" alignSelf="center">{salt}</Text>
+                                    </Flex>
                                 </Flex>
                             </Flex>
                         }
@@ -147,6 +154,7 @@ export function Preview() {
                             margin="0px 10px 0px 5px"
                             width="50%"
                             alignSelf="flex-end"
+                            isDisabled={authorUrlButtonDisabled}
                             onPress={handleAuthorLinkPress}>
                                 <LinkOut/>
                                 Author Profile&nbsp;&nbsp;&nbsp;

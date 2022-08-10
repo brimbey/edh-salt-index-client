@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React from 'react'
 import './App.css';
 import { defaultTheme, Flex, Provider as ProviderV3, View } from '@adobe/react-spectrum';
 import { ToastContainer } from 'react-toastify';
@@ -16,14 +16,6 @@ import { Why } from './components/why/Why';
 import { FooterBar } from './components/footerBar/FooterBar';
 
 export default function App() {
-  //   const [height, setHeight] = useState(0)
-  // const ref = useRef(null)
-
-  // useEffect(() => {
-  //   console.log(`CURRENT HEIGHT :: ${ref.current.clientHeight}`)
-  //   setHeight(ref.current.clientHeight)
-  // })
-
   return (
     <div style={{ backgroundColor: "red" }}>
       <Provider store={store}>

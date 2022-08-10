@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import {Cell, Column, Row, TableView, Text, TableBody, TableHeader, Flex, View} from '@adobe/react-spectrum'
-import { selectLeaderboardList, setForceLoad, getLeaderboardList, setIsUpdate, fetchAll } from '../../data/redux/slices/leaderboardSlice';
+import {Cell, Column, Row, TableView, TableBody, TableHeader, Flex } from '@adobe/react-spectrum'
+import { fetchAll } from '../../data/redux/slices/leaderboardSlice';
 import './LeaderBoard.css';
-import { setPreviewDeck } from '../../data/redux/slices/previewSlice';
-import {useAsyncList} from '@react-stately/data';
-// import { useWindowScrollPositions } from './ScrollPositions';
+import { setPreviewDeck, setPreviewIsShowingFalse } from '../../data/redux/slices/previewSlice';
 import { useScrollPosition } from '@n8tb1t/use-scroll-position'
 
 export const getCellRenderer = ((item, columnKey) => {
@@ -68,7 +66,11 @@ export function LeaderBoard() {
               return value.id === currentKey;
           })?.[0];
           
-          dispatch(setPreviewDeck(selectedDeck));
+          if (selectedDeck) {
+            dispatch(setPreviewDeck(selectedDeck));
+          } else {
+            dispatch(setPreviewIsShowingFalse());
+          }
       } catch (error) {
           console.log(`error :: ${error}`);
       }    

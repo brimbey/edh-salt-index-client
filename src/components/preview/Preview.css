@@ -16,11 +16,17 @@
 .SaltScore {
     font-size: 25px;
     font-weight: bolder;
-    padding-right: 10px;
     color:crimson;
     /* align-self: center; */
 }
+.FlavorProfile {
+    font-size: 35px;
+    font-weight: bolder;
+    color:rgb(108, 245, 255);
+    /* align-self: center; */
+}
 .SaltScoreHeader {
+    padding-left: 0px;
     font-size: 12px;
     font-weight: bolder;
     /* align-self: center; */
