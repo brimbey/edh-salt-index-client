@@ -13,10 +13,6 @@ export class MainView extends React.Component {
         return href.substring(href.indexOf(`?sha=`) + 5) || ``;
     }
 
-    handleListSubmit = async (value) => {
-        this.props.importDeckList(value);
-    };
-
     componentDidMount = async () => {
         this.props.refreshLeaderboard();
         const userAgent = window.navigator['user-agent'];
@@ -32,10 +28,10 @@ export class MainView extends React.Component {
                 alignItems="center"
                 maxWidth="1200px"
                 gap="size-100">
-                <Flex direction="column" width="100%" maxWidth="800px" marginTop="50px">
+                <Flex direction="column" width="calc(100vw - 30px)" maxWidth="800px" marginTop="50px">
                     {this.props.isImporting
                         ? <ImportStatusBar />
-                        : <SubmitForm listSubmitHandler={this.handleListSubmit} />// initialListUrl={param} />
+                        : <SubmitForm />// initialListUrl={param} />
                     }
                 </Flex>
                 <div style={{height: "10px"}} />

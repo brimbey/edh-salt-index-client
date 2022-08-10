@@ -1,0 +1,19 @@
+  .submit-button {
+    background: url("submit-shaker.png");
+    background-repeat: no-repeat;
+    background-position: left;
+    font-size: 15px;
+    height: 40px;
+    font-weight: bold;
+    color: white;
+    white-space: nowrap;
+    min-width: 150px;
+  }
+
+  .submit-header {
+    padding-left: 0px;
+    font-size: 14px;
+    font-weight: bolder;
+    margin-bottom: 5px;
+    /* margin-left:10px; */
+}

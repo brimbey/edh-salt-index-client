@@ -31,7 +31,7 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(doHardReload());
   },
   importDeckList(uri) {
-    dispatch(importDeckList(uri));
+    // dispatch(importDeckList(uri));
   }
 });
 

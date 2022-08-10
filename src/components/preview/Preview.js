@@ -52,7 +52,7 @@ export function Preview() {
         } else if (val < 60) {
             return "Well seasoned";
         } else if (val < 80) {
-            return "Completely balanced!";
+            return "Fair and balanced!";
         }
 
         return "PERFECTION";
@@ -158,7 +158,7 @@ export function Preview() {
                             onPress={handleAuthorLinkPress}>
                                 <LinkOut/>
                                 Author Profile&nbsp;&nbsp;&nbsp;
-                            </ActionButton>
+                        </ActionButton>
                     </Flex>
                 </Flex>
             </div>

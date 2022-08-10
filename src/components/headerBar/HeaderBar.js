@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Flex, Divider, Text, ActionButton, DialogTrigger, Dialog, Heading, Content, Button } from "@adobe/react-spectrum";
+import { Flex, Divider, Text, ActionButton, DialogTrigger, Dialog, Heading, Content} from "@adobe/react-spectrum";
 import ShowMenu from '@spectrum-icons/workflow/ShowMenu';
 import {
     Link,
