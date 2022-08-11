@@ -5,6 +5,7 @@ import { fetchAll } from '../../data/redux/slices/leaderboardSlice';
 import './LeaderBoard.css';
 import { setPreviewDeck, setPreviewIsShowingFalse } from '../../data/redux/slices/previewSlice';
 import { useScrollPosition } from '@n8tb1t/use-scroll-position'
+import { FilterPanel } from '../filterpanel/FilterPanel';
 
 export const getCellRenderer = ((item, columnKey) => {
   let content;
@@ -58,6 +59,7 @@ export function LeaderBoard() {
   const isFetching = useSelector((state) => state?.leaderboard?.isFetching);
   const loadingState = useSelector((state) => state?.leaderboard?.loadingState);
   const isMobile = useSelector((state) => state?.app?.isMobile);
+  const searchFilters = useSelector((state) => state?.leaderboard?.filters);
 
   const handleLeaderboardSelectionChange = (evn) => {
       try {
@@ -78,7 +80,7 @@ export function LeaderBoard() {
 
   const handleLoadMore = (evn) => {
     if (!isFetching && nextCursor !== null) {
-      dispatch(fetchAll(nextCursor));
+      dispatch(fetchAll(nextCursor, searchFilters));
     }
   }
 
@@ -148,7 +150,7 @@ export function LeaderBoard() {
   let diffDiff = diff - scrollYPosition;
   diffDiff = diffDiff < 0 ? 0 : diffDiff;
   
-  const tableHeight = `${innerHeight - diffDiff - 50}px`;// : "calc(100vh - 380px)";
+  const tableHeight = `${innerHeight - diffDiff - 85}px`;// : "calc(100vh - 380px)";
 
   useEffect(() => {
       window.addEventListener('resize', handleResize, { passive: true });
@@ -165,43 +167,47 @@ export function LeaderBoard() {
         <Text>s: {document.body.scrollHeight}</Text>
       </Flex> */}
       <div style={{ width: '1px', height: maxHeight }} />
-      <TableView
-        aria-label="All time salt index"
-        density='compact'
-        selectionMode="single" 
-        selectionStyle="highlight"
-        onSelectionChange={handleLeaderboardSelectionChange}
-        sortDescriptor={initialSortDescriptor}
-        onSortChange={sort}
-        UNSAFE_style={{ height: tableHeight }}
-        width="100%"
-        marginBottom="40px"
-      >
-        <TableHeader columns={columns}>
-          {column => (
-            <Column
-              key={column?.uid}
-              align={column?.uid === 'authorAvatarUrl' ? 'start' : 'start'}
-              maxWidth={column?.maxWidth}
-              width={column?.width}
-              minWidth={column?.minWidth}
-            >
-              {getColumnRenderer(column)}
-            </Column>
-          )}
-        </TableHeader>
-        <TableBody 
-          items={listItems}
-          loadingState={loadingState}
-          onLoadMore={handleLoadMore}
+      <Flex direction="column" width="100%">
+        <div style={{ height: '15px', width:'100%' }} />
+        <FilterPanel />
+        <TableView
+          aria-label="All time salt index"
+          density='compact'
+          selectionMode="single" 
+          selectionStyle="highlight"
+          onSelectionChange={handleLeaderboardSelectionChange}
+          sortDescriptor={initialSortDescriptor}
+          onSortChange={sort}
+          UNSAFE_style={{ height: tableHeight }}
+          width="100%"
+          marginBottom="40px"
         >
-          {item => (
-            <Row>
-              {columnKey => getCellRenderer(item, columnKey)}
-            </Row>
-          )}
-        </TableBody>
-      </TableView>
-      </Flex>
+          <TableHeader columns={columns}>
+            {column => (
+              <Column
+                key={column?.uid}
+                align={column?.uid === 'authorAvatarUrl' ? 'start' : 'start'}
+                maxWidth={column?.maxWidth}
+                width={column?.width}
+                minWidth={column?.minWidth}
+              >
+                {getColumnRenderer(column)}
+              </Column>
+            )}
+          </TableHeader>
+          <TableBody 
+            items={listItems}
+            loadingState={loadingState}
+            onLoadMore={handleLoadMore}
+          >
+            {item => (
+              <Row>
+                {columnKey => getCellRenderer(item, columnKey)}
+              </Row>
+            )}
+          </TableBody>
+        </TableView>
+      </Flex>  
+    </Flex>
   );
 }

@@ -8,6 +8,16 @@ export const leaderboardSlice = createSlice({
     nextCursor: null,
     isFetching: false,
     loadingState: `idle`,
+    filters: {
+      isFiltered: false,
+      query: '',
+      sources: [
+        'www.moxfield.com',
+        'www.archidekt.com',
+        'www.tappedout.net',
+        'www.manabox.app',
+      ],
+    }
   },
   reducers: {
     setLeaderboardItems: (state, action) => {
@@ -45,6 +55,12 @@ export const leaderboardSlice = createSlice({
       state.isFetching = action.payload.isFetching;
       state.loadingState = action.payload.loadingState;
     },
+    setSearchFilters: (state, action) => {
+      state.filters.query = action?.payload?.query || '';
+      state.filters.sources = action?.payload?.sources || [];
+      
+      state.filters.isFiltered = (state.filters.query.trim() !== "") || state.filters.sources.length > 0;
+    }
   },
 });
 
@@ -57,30 +73,23 @@ export const isLeaderboardFetching = (state) => state?.leaderboard?.isFetching |
 export const getNextCursor = (state) => state?.leaderboard?.nextCursor || null;
 
 // Action creators are generated for each case reducer function
-export const { setLeaderboardItems, setNextCursor, addNewItems, setLeaderboardIsFetching, updateExistingItem } = leaderboardSlice.actions;
+export const { setLeaderboardItems, setNextCursor, addNewItems, setLeaderboardIsFetching, updateExistingItem, setSearchFilters } = leaderboardSlice.actions;
 
-export const doHardReload = () => (dispatch) => {
-  dispatch(setLeaderboardItems([]));
-  dispatch(setLeaderboardIsFetching({
-    isFetching: true,
-    loadingState: `loading`,
-  }));
+export const fetchFiltered = (payload) => (dispatch) => {
+  dispatch(setSearchFilters(payload));
+  dispatch(fetchAll(null, {
+    ...payload,
+    isFiltered: true,
+  }, true))
+}
 
-  DynamoConnector.getLeaderboard(
-    null,
-    (results) => {
-      dispatch(addNewItems({
-        items: results.items,
-        cursor: results?.lastEvaluatedKey ? results.lastEvaluatedKey : null,
-        type: null,
-      }));
-  });
-};
-
-export const fetchAll = (cursor) => (dispatch) => {
+export const fetchAll = (cursor, filters = {}, isReload = false) => (dispatch) => {
       cursor = cursor !== -1 ? cursor : null;
-
       cursor = cursor ? `${new URLSearchParams(cursor).toString()}` : null;
+
+      if (isReload) {
+        dispatch(setLeaderboardItems([]));
+      }
 
       dispatch(setLeaderboardIsFetching({
         isFetching: true,
@@ -89,6 +98,7 @@ export const fetchAll = (cursor) => (dispatch) => {
 
       DynamoConnector.getLeaderboard(
         cursor,
+        filters,
         (results) => {
           dispatch(addNewItems({
             items: results.items,

@@ -18,8 +18,6 @@ export function SubmitForm() {
     dispatch(importDeckList(urlCleanedValue));
   }
 
-  
-
   return (
     <Flex direction={flexDirection} alignItems="end" rowGap="10px" columnGap="25px" maxWidth="800px" width="calc(100vw - 30px)">
       <Flex direction="column" maxWidth="800px" width="100%" justifyContent="space-around">

@@ -44,7 +44,7 @@ export function Preview() {
 
     const getSaltRating = (val) => {
         if (val < 10) {
-            return "WHERE IS THE SALT?!";
+            return "MOAR SALT!";
         } else if (val < 30) {
             return "Under seasoned";
         } else if (val < 40) {
@@ -52,7 +52,7 @@ export function Preview() {
         } else if (val < 60) {
             return "Well seasoned";
         } else if (val < 80) {
-            return "Fair and balanced!";
+            return "Pure artistry!";
         }
 
         return "PERFECTION";

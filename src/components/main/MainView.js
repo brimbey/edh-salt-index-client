@@ -39,9 +39,9 @@ export class MainView extends React.Component {
                     ? <Preview />  
                     : <div style={{height: "0px"}} />
                 }
-                <View width="100%">
+                <Flex direction="column" width="100%">
                     <LeaderBoard selectionHandler={this.handleLeaderboardSelectionChange}  />
-                </View>
+                </Flex>
              </Flex>
         )
     }
