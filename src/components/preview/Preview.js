@@ -83,8 +83,14 @@ export function Preview() {
     const source = deck?.source;
     const authorUrlButtonDisabled = !deck?.authorProfileUrl;
 
+    const floatValue = parseFloat(deck?.salt).toFixed(3);
+    const percentage = floatValue / 100;
+    const colorPercentage = percentage * 80;
+    const colorValue = Math.ceil(80 - colorPercentage);
+    const colorCss = `hsl(${colorValue} 100% 50%)`;
+
     return (
-        <DialogContainer type='modal'>
+        <DialogContainer type='modal' isDismissable onDismiss={() => dispatch(setPreviewIsShowingFalse())}>
             <div className='PreviewContainer' style={{ width: maxWidth, maxWidth: "600px" }}>
                 <Flex direction="column" width="100%">
                     <View UNSAFE_className='PreviewContainerHeader' padding="10px">
@@ -137,7 +143,7 @@ export function Preview() {
                                     </Flex>
                                     <Flex direction="column" margin="size-0" justifyContent="center" width="300px">
                                         <Text UNSAFE_className="SaltScoreHeader" alignSelf="center">SCORE</Text>
-                                        <Text UNSAFE_className="SaltScore" alignSelf="center">{salt}</Text>
+                                        <Text UNSAFE_className="SaltScore" alignSelf="center" UNSAFE_style={{ color: colorCss }}>{salt}</Text>
                                     </Flex>
                                 </Flex>
                             </Flex>

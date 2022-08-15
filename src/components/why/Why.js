@@ -13,7 +13,6 @@ export function Why() {
                 marginRight="0px" 
                 marginLeft="0px"
                 maxWidth="800px"
-                // alignSelf="center"
                 gap="size-100">
                 <h1>Why does this exist?!</h1>
                 <Text>
@@ -25,7 +24,7 @@ export function Why() {
                     a deck's overall salt score based on the scores of it's constituent cards.
                 </Text>
                 <Text>
-                    We showed this to a few other people that we played with in our lgs, and quickly realized that the idea was amusing enough that other people wanted to participate.
+                    We showed this sfd;lksdf ;ksfsd;lkf sdlfk ds;lf'lsd f'sdl fsdlkf sd;lfks df;ldsk dflskdfj sdlkfj dslkfsdkj f;dks sl;d as;dk ewpokda s;kd s;ldfsk to a few other people that we played with in our lgs, and quickly realized that the idea was amusing enough that other people wanted to participate.
                 </Text>
                 <Text>
                     Thus... <i>this</i>.

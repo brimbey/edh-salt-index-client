@@ -41,6 +41,7 @@ export default function App() {
                   height="auto"
                   width="100%"
                   maxWidth="1200px"
+                  marginBottom="40px"
                 >
                   <Routes>
                     <Route exact path='/' element={< MainView />}></Route>

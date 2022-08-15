@@ -16,7 +16,8 @@
 .SaltScore {
     font-size: 25px;
     font-weight: bolder;
-    color:crimson;
+    font-family:'Courier New', Courier, monospace;
+    /* color:crimson; */
     /* align-self: center; */
 }
 .FlavorProfile {

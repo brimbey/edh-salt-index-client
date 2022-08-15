@@ -33,17 +33,22 @@ export function FilterPanel() {
       sources: evn,
     }));
   }
+
+  const toggleIsOpen = (val) => {
+    setIsOpen(val);
+    window.dispatchEvent(new Event('resize'));
+  }
   
   const [isOpen, setIsOpen] = useState(0);
   const maxHeight = isOpen ? "95px" : "25px";
   // const searchAndClearFlexDirection = isMobile ? "column" : "row"
   
   return (
-    <Flex direction="column" maxHeight={maxHeight} height={maxHeight} UNSAFE_style={{ overflow: 'hidden', paddingLeft: '15px' }}  maxWidth="800px" width="calc(100vw - 30px)">
+    <Flex direction="column" maxHeight={maxHeight} height={maxHeight} UNSAFE_style={{ overflow: 'hidden' }} width="100%">
       <Flex direction="row" alignItems="start" columnGap="40px">
         <ActionButton
           isQuiet
-          onPress={() => setIsOpen(isOpen ? false : true)} height="20px" marginBottom="5px">
+          onPress={() => toggleIsOpen(isOpen ? false : true)} height="20px" marginBottom="5px">
           {isOpen
             ? <ChevronDown />
             : <ChevronRight />
@@ -51,7 +56,7 @@ export function FilterPanel() {
           <Text UNSAFE_className='filters-header'>FILTERS</Text>
         </ActionButton>
       </Flex>
-      <Flex direction="row" width="100%" rowGap="10px" columnGap="25px" justifyContent="space-between">
+      <Flex direction="row" width="100%" rowGap="10px" columnGap="25px" UNSAFE_style={{ paddingLeft: '15px' }} justifyContent="space-between">
         <Flex direction="column" justifyContent="space-around">
           <Text UNSAFE_className='filters-sources-header'>Sources</Text>
           <DialogTrigger type="popover" mobileType="modal" >
@@ -75,7 +80,7 @@ export function FilterPanel() {
             )}
           </DialogTrigger>
         </Flex>
-        <Flex direction="column" width="100%">
+        <Flex direction="column" width="100%" justifyContent="space-around" UNSAFE_style={{ marginRight: "25px" }}>
           <Flex direction="row" columnGap="10px">
             <Text UNSAFE_className='filters-sources-header'>Search</Text>
             <ContextualHelp variant="info">
@@ -103,6 +108,7 @@ export function FilterPanel() {
                   sources,
                 }))}}
             width="100%"
+            maxWidth="500px"
           />
         </Flex>
         {/* <ActionButton

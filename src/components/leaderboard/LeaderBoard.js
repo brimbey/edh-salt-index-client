@@ -13,22 +13,43 @@ export const getCellRenderer = ((item, columnKey) => {
   if (columnKey === "authorAvatarUrl" && item.url) {
     const avatarUrl = item?.[columnKey] || `/resources/blank-user-avatar.png`;
     
-    content =
-      <img 
-        src={avatarUrl} 
-        height="26px"
-        alt={item.author} 
-        className="AvatarCell"  
-      />
-  } else if (columnKey === "commanders") {
-    content = item[columnKey]?.toString().replace(`,`, `, `);
+    return (
+      <Cell>
+        <div className='AvatarCell'>
+          <img 
+            src={avatarUrl} 
+            height="50px"
+            alt={item.author} 
+            className="AvatarCell"  
+          />
+        </div>
+      </Cell>
+    )
+  } else if (columnKey === "salt") {
+    const floatValue = parseFloat(item[columnKey]).toFixed(3);
+    const percentage = floatValue / 100;
+    const colorPercentage = percentage * 80;
+    const colorValue = Math.ceil(80 - colorPercentage);
+    const colorCss = `hsl(${colorValue} 100% 50%)`;
+
+    return (
+      <Cell>
+        <div className='SaltCell' style={{ color: colorCss }}>
+          {floatValue}
+        </div>
+      </Cell>
+    )
   } else {
     content = item[columnKey];
   }
 
 
   return (
-    <Cell className="AvatarCell" >{content}</Cell>
+    <Cell>
+      <div className='TextCell'>
+        {content}
+      </div>
+    </Cell>
   );
 });
 
@@ -65,7 +86,7 @@ export function LeaderBoard() {
       try {
           const {currentKey} = evn;
           const selectedDeck = listItems.filter((value, index) => {
-              return value.id === currentKey;
+              return value?.id === currentKey;
           })?.[0];
           
           if (selectedDeck) {
@@ -124,22 +145,17 @@ export function LeaderBoard() {
   const [scrollYPosition, setScrollYPosition] = useState(true)
   const [windowSize, setWindowSize] = useState(0);
 
-  useScrollPosition(({ prevPos, currPos }) => {
-    setWindowSize({
-      inner: window.innerHeight,
-      outer: document.body.scrollHeight,
-    })
-    setScrollYPosition(-1 * currPos.y)
-  }, [scrollYPosition])
-
-
-  
   const handleResize = () => {
     setWindowSize({
       inner: window.innerHeight,
       outer: document.body.scrollHeight,
     })
   }
+
+  useScrollPosition(({ prevPos, currPos }) => {
+    handleResize()
+    setScrollYPosition(-1 * currPos.y)
+  }, [scrollYPosition])
 
   const innerHeight = windowSize.inner || window.innerHeight;// || window.innerHeight;
   const outerHeight = windowSize.outer || document.body.scrollHeight;
@@ -150,7 +166,7 @@ export function LeaderBoard() {
   let diffDiff = diff - scrollYPosition;
   diffDiff = diffDiff < 0 ? 0 : diffDiff;
   
-  const tableHeight = `${innerHeight - diffDiff - 85}px`;// : "calc(100vh - 380px)";
+  const tableHeight = `${innerHeight - diffDiff - 95}px`;// : "calc(100vh - 380px)";
 
   useEffect(() => {
       window.addEventListener('resize', handleResize, { passive: true });
@@ -168,9 +184,9 @@ export function LeaderBoard() {
       </Flex> */}
       <div style={{ width: '1px', height: maxHeight }} />
       <Flex direction="column" width="100%">
-        <div style={{ height: '15px', width:'100%' }} />
         <FilterPanel />
         <TableView
+         overflowMode="wrap"
           aria-label="All time salt index"
           density='compact'
           selectionMode="single" 
@@ -180,7 +196,6 @@ export function LeaderBoard() {
           onSortChange={sort}
           UNSAFE_style={{ height: tableHeight }}
           width="100%"
-          marginBottom="40px"
         >
           <TableHeader columns={columns}>
             {column => (
