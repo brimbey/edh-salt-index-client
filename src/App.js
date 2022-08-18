@@ -7,20 +7,22 @@ import { Provider } from 'react-redux';
 import MainView from './components/main/MainViewContainer';
 import store from './data/redux/store/AppStore';
 import {
-  BrowserRouter as Router,
+  HashRouter as Router,
   Routes,
   Route
 } from 'react-router-dom';
 import { HeaderBar } from './components/headerBar/HeaderBar';
 import { Why } from './components/why/Why';
 import { FooterBar } from './components/footerBar/FooterBar';
+import { Commanders } from './components/commanders/Commanders';
+// import history from './data/history/AppHistory';
 
 export default function App() {
   return (
     <div style={{ backgroundColor: "red" }}>
       <Provider store={store}>
         <ProviderV3 theme={defaultTheme} colorScheme="dark">
-          <Router>
+          <Router> 
             <ToastContainer />
             <Flex
               id="AppContainer"
@@ -44,8 +46,9 @@ export default function App() {
                   marginBottom="40px"
                 >
                   <Routes>
-                    <Route exact path='/' element={< MainView />}></Route>
-                    <Route exact path='/why' element={< Why />}></Route>
+                    <Route path='/' element={< MainView />}></Route>
+                    <Route path='/commanders' element={< Commanders />}></Route>
+                    <Route path='/why' element={< Why />}></Route>
                   </Routes>
                 </View>
               </Flex>

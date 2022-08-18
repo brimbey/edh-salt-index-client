@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { DynamoConnector } from '../../DynamoConnector';
+import { fetchCommanderLeaderboardItems } from './commandersLeaderboardSlice';
 
 export const appSlice = createSlice({
   name: 'app',
@@ -10,7 +11,7 @@ export const appSlice = createSlice({
       total: 0,
     },
     route: {
-      uri: '',
+      uri: '/',
       title: 'Leaderboard',
     }
   },
@@ -47,10 +48,17 @@ export const setAppRoute = (route) => (dispatch) => {
     let newRoute = '';
     let newTitle = '';
 
+    console.log(`ROUTE :: ${route}`);
+
     switch (route) {
       case '/why':
         newRoute = `/why`;
         newTitle = `Why?!`;
+        break;
+      case '/commanders':
+        dispatch(fetchCommanderLeaderboardItems());
+        newRoute = `/commanders`;
+        newTitle = `Commanders`;
         break;
       default: 
         newRoute = `/`;

@@ -19,7 +19,7 @@ export function Preview() {
     const dispatch = useDispatch();
 
     const handleAuthorLinkPress = (evn) => {
-        window.open(deck.authorProfileUrl, `_blank`);
+        window.open(deck.author.url, `_blank`);
       }
 
     const handleDeckLinkPress = (evn) => {
@@ -58,10 +58,10 @@ export function Preview() {
         return "PERFECTION";
       }
 
-    const avatarUrl = deck?.authorAvatarUrl;
+    const avatarUrl = deck?.author?.profileImageUrl;
     const title = deck?.title;
-    const salt = deck?.salt;
-    const author = deck?.author;
+    const salt = parseFloat(deck?.salt).toFixed(3);
+    const author = deck?.author?.username;
     let commanderList = deck?.commanders;
     if (!Array.isArray(commanderList)) {
         commanderList = [deck?.commanders];
@@ -81,7 +81,7 @@ export function Preview() {
     const maxWidth = isMobile ? "calc(100vw - 40px)" : '500px';
     const wellMaxWidth = `calc(${maxWidth} - 50px)`;
     const source = deck?.source;
-    const authorUrlButtonDisabled = !deck?.authorProfileUrl;
+    const authorUrlButtonDisabled = !deck?.author?.url;
 
     const floatValue = parseFloat(deck?.salt).toFixed(3);
     const percentage = floatValue / 100;

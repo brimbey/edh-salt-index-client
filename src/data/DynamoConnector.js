@@ -30,6 +30,23 @@ export const DynamoConnector = {
 
     callback(results);
   },
+  getCommandersLeaderboard: async (cursor, callback) => {
+    let fetchUri = `${getDomainPrefix()}/commanders`;
+    
+    if (cursor) {
+        cursor = encodeURIComponent(cursor);
+        fetchUri = `${fetchUri}?cursor=${cursor}`;
+    }
+
+    const results = await (await fetch(fetchUri, {
+        method: "GET",
+        headers: {
+            "Content-type": "application/json;charset=UTF-8",
+        }
+      })).json();
+
+    callback(results);
+  },
   getLeaderboard: async (cursor, filters, callback) => {
     let fetchUri = `${getDomainPrefix()}/leaderboard`;
     
@@ -63,42 +80,8 @@ export const DynamoConnector = {
 
     callback(results);
   },
-  fetchCardInList: async (cardname, finishedCallback) => {
-    try {
-        let response = null;
-        try {
-            await (
-                response = await fetch(`${getDomainPrefix()}/card?card=${encodeURIComponent(cardname)}`, {
-                    method: "GET",
-                    headers: {
-                        "Content-type": "application/json;charset=UTF-8",
-                    }
-                })
-            )
-        } catch (error) {
-            // sometimes the response fails... try one more time just to be sure
-            response = await fetch(`${getDomainPrefix()}/card?card=${encodeURIComponent(cardname)}`, {
-                method: "GET",
-                headers: {
-                    "Content-type": "application/json;charset=UTF-8",
-                }
-            })
-        }
-
-        await response.json().then((data) => {
-            finishedCallback(data);
-        })
-    } catch (error) {
-        console.log(`failed to get ${cardname}`);
-        finishedCallback({})
-    }
-  },
   importDeckList: async (url, statusCallback, doneCallback, errorCallback) => {
     try {
-        const cardList = [];
-        const cardnameList = [];
-        let saltTotal = 0;
-
         statusCallback(
             {
                 type: `card`, 
@@ -119,67 +102,10 @@ export const DynamoConnector = {
             throw response;
         }   
 
-        const commanders = Object.keys(response?.deck?.commanders);
-        const nodes = response.deck.cards;
-        
-        Object.keys(nodes).forEach((cardname) => {
-            cardnameList.push(cardname);
-        })
-
-        const promises = [];
-        const fetchFinishedHandler = async (data) => {
-            if (data?.salt) {
-                cardList.push(data);
-
-                if (cardList.length !== cardnameList.length) {
-                    statusCallback(
-                        {
-                            type: `card`, 
-                            card: data.name, 
-                            percentage: Math.floor((cardList.length / cardnameList.length) * 100)
-                        }
-                    );
-                } else {
-                    statusCallback(
-                        {
-                            type: `card`, 
-                            card: `Finalizing...`, 
-                            percentage: 100,
-                        }
-                    );
-                }
-        
-                saltTotal = saltTotal + parseFloat(data.salt);
-            }
-        }
-
-        for (let i = 0; i < cardnameList.length; i++) {
-            const cardname = cardnameList[i];
-            promises.push(DynamoConnector.fetchCardInList(cardname, fetchFinishedHandler));
-        }
-
-        await Promise.all(promises);
-
-        const persistResponse = await (await fetch(`${getDomainPrefix()}/persist`, {
-            method: "POST",
-            body: JSON.stringify({
-                url: response?.deck?.url,
-                author: response?.deck?.author?.username,
-                authorAvatarUrl: response?.deck?.author?.profileImageUrl,
-                commanders,
-                title: response?.deck?.name,
-                salt: saltTotal,
-                source: response?.deck?.source,
-                authorProfileUrl: response?.deck?.author?.url,
-            })
-        })).json();
-
         doneCallback({
-            ...persistResponse.data,
-            id: persistResponse.id,
-            key: persistResponse.id,
-            salt: persistResponse?.data?.salt,
-        });
+            ...response.deck,
+            key: response.deck.id,
+        })
     } catch (error) {
         console.log(error);
         errorCallback(error);

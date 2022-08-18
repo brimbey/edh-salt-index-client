@@ -2,15 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {Cell, Column, Row, TableView, TableBody, TableHeader, Flex } from '@adobe/react-spectrum'
 import { fetchAll } from '../../data/redux/slices/leaderboardSlice';
-import './LeaderBoard.css';
+import './Commanders.css';
 import { setPreviewDeck, setPreviewIsShowingFalse } from '../../data/redux/slices/previewSlice';
 import { useScrollPosition } from '@n8tb1t/use-scroll-position'
 import { FilterPanel } from '../filterpanel/FilterPanel';
+import { fetchCommanderLeaderboardItems } from '../../data/redux/slices/commandersLeaderboardSlice';
+
 
 export const getCellRenderer = ((item, columnKey) => {
   let content;
 
   if (columnKey === "authorAvatarUrl" && item.url) {
+    console.log(`ITEM :: ${item}`);
     const avatarUrl = item?.author?.profileImageUrl || `/resources/blank-user-avatar.png`;
     
     return (
@@ -59,7 +62,7 @@ export const getColumnRenderer = ((item) => {
   if (item.uid === "salt") {
     content =
       <Flex direction="row">
-        Salt&nbsp;&nbsp;
+        Average Salt&nbsp;&nbsp;
         <img src="/resources/salt-shaker.png" height="25px" alt="Salt Score"  />
       </Flex>
   } else {
@@ -73,14 +76,16 @@ export const getColumnRenderer = ((item) => {
   );
 });
 
-export function LeaderBoard() {
+export function Commanders() {
   const dispatch = useDispatch();
-  const listItems = useSelector((state) => state?.leaderboard?.listItems);
-  const nextCursor = useSelector((state) => state?.leaderboard?.nextCursor);
-  const isFetching = useSelector((state) => state?.leaderboard?.isFetching);
-  const loadingState = useSelector((state) => state?.leaderboard?.loadingState);
+  const listItems = useSelector((state) => state?.commandersLeaderboard?.listItems);
+  const nextCursor = useSelector((state) => state?.commandersLeaderboard?.nextCursor);
+  const isFetching = useSelector((state) => state?.commandersLeaderboard?.isFetching);
+  const loadingState = useSelector((state) => state?.commandersLeaderboard?.loadingState);
   const isMobile = useSelector((state) => state?.app?.isMobile);
-  const searchFilters = useSelector((state) => state?.leaderboard?.filters);
+
+  console.log(`GOT ITEMS`);
+  console.log(JSON.stringify(listItems));
 
   const handleLeaderboardSelectionChange = (evn) => {
       try {
@@ -101,7 +106,7 @@ export function LeaderBoard() {
 
   const handleLoadMore = (evn) => {
     if (!isFetching && nextCursor !== null) {
-      dispatch(fetchAll(nextCursor, searchFilters));
+      dispatch(fetchCommanderLeaderboardItems(nextCursor));
     }
   }
 
@@ -119,19 +124,10 @@ export function LeaderBoard() {
   }
 
   let columns = [
-    {name: 'USER', uid: 'authorAvatarUrl', maxWidth: 25},
     {name: 'Commander(s)', uid: 'commanders'},
+    {name: 'Count', uid: 'count', width: 125},
+    {name: '', uid: 'salt', width: 125},
   ];
-
-  if (!isMobile) {
-    columns.push(    
-      {name: 'Title', uid: 'title'}
-    );
-  }
-  
-  columns.push(
-    {name: '', uid: 'salt', width: 125}
-  );
 
   const flexWrapperStyle = {
     display: 'inline-block',
@@ -177,14 +173,13 @@ export function LeaderBoard() {
   }, []);
   
   return (
-    <Flex direction="row">
+    <Flex direction="row" marginTop="50px">
       {/* <Flex direction="column">
         <Text>i: {innerHeight}</Text>
         <Text>s: {document.body.scrollHeight}</Text>
       </Flex> */}
       <div style={{ width: '1px', height: maxHeight }} />
       <Flex direction="column" width="100%">
-        <FilterPanel />
         <TableView
          overflowMode="wrap"
           aria-label="All time salt index"
@@ -201,7 +196,7 @@ export function LeaderBoard() {
             {column => (
               <Column
                 key={column?.uid}
-                align={column?.uid === 'authorAvatarUrl' ? 'start' : 'start'}
+                align='start'
                 maxWidth={column?.maxWidth}
                 width={column?.width}
                 minWidth={column?.minWidth}

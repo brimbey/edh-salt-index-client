@@ -7,6 +7,7 @@ import {
   } from 'react-router-dom';
 import './HeaderBar.css';
 import { setAppRoute } from '../../data/redux/slices/appSlice';
+// import history from '../../data/history'
 
 
 
@@ -20,7 +21,8 @@ export function HeaderBar() {
 
     const handleMenuClick = (route, closeMethod) => {
         dispatch(setAppRoute(route));
-        // navigate(route);     
+        // navigate(route);
+        // history.push(route);
         closeMethod();
     }
 
@@ -48,13 +50,25 @@ export function HeaderBar() {
                                 <Content
                                     minHeight="100vh">
                                     <Flex direction="column">
-                                        <Link 
-                                            to="/" 
-                                            onClick={() => { 
-                                                handleMenuClick(`/`, close); 
-                                            } }>
-                                            Leaderboard
-                                        </Link>
+                                        <nav>
+                                            <Link 
+                                                to="/" 
+                                                onClick={() => { 
+                                                    handleMenuClick(`/`, close); 
+                                                } }>
+                                                Leaderboard
+                                            </Link>
+                                        </nav>
+                                        <nav>
+                                            <Link 
+                                                to="/commanders" 
+                                                onClick={() => { 
+                                                    handleMenuClick(`/commanders`, close); 
+                                                } }>
+                                                Commanders
+                                            </Link>
+                                        </nav>
+                                        <nav>
                                         <Link 
                                             to="/why" 
                                             onClick={() => { 
@@ -62,6 +76,7 @@ export function HeaderBar() {
                                             } }>
                                             But... why?
                                         </Link>
+                                        </nav>
                                     </Flex>
                                 </Content>
                             </Dialog>

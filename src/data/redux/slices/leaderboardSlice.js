@@ -40,12 +40,19 @@ export const leaderboardSlice = createSlice({
     },
     updateExistingItem: (state, action) => {
       const updatedItem = action.payload;
+      let found = false;
+      
       state.listItems = state.listItems.map((item) => {
         if (item.id === updatedItem.id) {
+          found = true;
           return updatedItem;
         }
         return item;
       });
+
+      if (!found) {
+        state.listItems = state.listItems.concat([updatedItem]);
+      }
 
       state.listItems = state.listItems.sort((a, b) => {
         return parseFloat(b?.salt) - parseFloat(a?.salt);
@@ -110,12 +117,15 @@ export const fetchAll = (cursor, filters = {}, isReload = false) => (dispatch) =
 };
 
 export const addNewDeckToLeaderboard = (deck) => (dispatch) => {
-  dispatch(addNewItems({
-    items: [ deck ],
-    // cursor: results?.lastEvaluatedKey ? results.lastEvaluatedKey : null,
-    cursor: getNextCursor(),
-    type: 'new',
-  }));
+  // console.log(`GOT IT`);
+  // prettyPrintJSON(deck);
+  // dispatch(addNewItems({
+  //   items: [ deck ],
+  //   // cursor: results?.lastEvaluatedKey ? results.lastEvaluatedKey : null,
+  //   cursor: getNextCursor(),
+  //   type: 'new',
+  // }));
+  dispatch(updateExistingItem(deck));
 }
 
 export const handleUpdatedDeck = (deck) => (dispatch) => {
