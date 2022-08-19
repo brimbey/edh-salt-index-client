@@ -76,7 +76,21 @@ export const DynamoConnector = {
         headers: {
             "Content-type": "application/json;charset=UTF-8",
         }
-      })).json();
+      }))
+      .json();
+
+    results.items = results?.items?.map((item) => {
+        if (item?.data) {
+            console.log(`NARF`);
+            return {
+                ...item,
+                ...item.data,
+            }
+        }
+        
+
+        return item;    
+    })
 
     callback(results);
   },
@@ -104,7 +118,7 @@ export const DynamoConnector = {
 
         doneCallback({
             ...response.deck,
-            key: response.deck.id,
+            key: response.deck.id
         })
     } catch (error) {
         console.log(error);

@@ -15,9 +15,23 @@ import { HeaderBar } from './components/headerBar/HeaderBar';
 import { Why } from './components/why/Why';
 import { FooterBar } from './components/footerBar/FooterBar';
 import { Commanders } from './components/commanders/Commanders';
+import { useDispatch, useSelector } from 'react-redux';
+import { hydrate } from './data/redux/slices/appSlice';
 // import history from './data/history/AppHistory';
 
 export default function App() {
+  // try {
+  //   const dispatch = useDispatch();
+  //   // eslint-disable-next-line react-hooks/rules-of-hooks
+  //   const isHydrated = useSelector((state) => state.app.isHydrated);
+
+  //   if (!isHydrated) {
+  //     dispatch(hydrate());
+  //   }
+  // } catch (error) {
+  //   console.log(`... unable to hydrate.`);
+  // }
+
   return (
     <div style={{ backgroundColor: "red" }}>
       <Provider store={store}>

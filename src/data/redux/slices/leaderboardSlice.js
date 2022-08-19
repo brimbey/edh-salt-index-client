@@ -43,7 +43,7 @@ export const leaderboardSlice = createSlice({
       let found = false;
       
       state.listItems = state.listItems.map((item) => {
-        if (item.id === updatedItem.id) {
+        if (item?.id === updatedItem?.id) {
           found = true;
           return updatedItem;
         }

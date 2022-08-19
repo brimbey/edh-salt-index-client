@@ -3,7 +3,8 @@ import { MainView } from './MainView';
 import { doHardReload, fetchAll } from '../../data/redux/slices/leaderboardSlice';
 import { importDeckList, importPercentageDone, isImporting } from '../../data/redux/slices/importSlice';
 import { isPreviewShowing } from '../../data/redux/slices/previewSlice';
-import { getAppStats, setIsMobile } from '../../data/redux/slices/appSlice';
+import { getAppStats, hydrate, setIsMobile } from '../../data/redux/slices/appSlice';
+import { fetchCommanderLeaderboardItems } from '../../data/redux/slices/commandersLeaderboardSlice';
 
 
 const mapStateToProps = (state) => {
@@ -25,10 +26,13 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => ({
   initializeApp(isMobile) {
     dispatch(setIsMobile(isMobile));
-    dispatch(getAppStats());
+    dispatch(hydrate());
+    // dispatch(getAppStats());
+    // dispatch(fetchCommanderLeaderboardItems(null, true));
+    // dispatch(fetchAll(null, {}, true));
   },
   refreshLeaderboard() {
-    dispatch(fetchAll(null, {}, true));
+    // dispatch(fetchAll(null, {}, true));
   },
   importDeckList(uri) {
     // dispatch(importDeckList(uri));

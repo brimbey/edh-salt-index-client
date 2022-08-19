@@ -9,7 +9,6 @@ import { setPreviewIsShowingFalse } from '../../data/redux/slices/previewSlice';
 import { ImportStatusBar } from '../importStatusBar/ImportStatusBar';
 import { doRefresh } from '../../data/redux/slices/importSlice';
 
-
 export function Preview() {
     const deck = useSelector((state) => state.preview.previewDeck);
     const isRefreshing = useSelector((state) => state.import.isRefreshing);

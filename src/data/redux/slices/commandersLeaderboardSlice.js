@@ -41,7 +41,7 @@ const prettyPrintJSON = (json) => {
 // Action creators are generated for each case reducer function
 export const { setCommandersLeaderboardItems, setCommandersNextCursor, addNewCommandersLeaderboardItems, setCommandersLeaderboardIsFetching} = commandersLeaderboardSlice.actions;
 
-export const fetchCommanderLeaderboardItems = (cursor, filters = {}, isReload = false) => (dispatch) => {
+export const fetchCommanderLeaderboardItems = (cursor, isReload = false) => (dispatch) => {
       cursor = cursor !== -1 ? cursor : null;
       cursor = cursor ? `${new URLSearchParams(cursor).toString()}` : null;
 

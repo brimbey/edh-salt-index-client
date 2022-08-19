@@ -1,12 +1,15 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { DynamoConnector } from '../../DynamoConnector';
 import { fetchCommanderLeaderboardItems } from './commandersLeaderboardSlice';
+import { fetchAll, setSearchFilters } from './leaderboardSlice';
+import { useDispatch, useSelector } from 'react-redux';
 
 export const appSlice = createSlice({
   name: 'app',
   initialState: {
     windowWidth: 0,
     isMobile: false,
+    isHydrated: false,
     stats: {
       total: 0,
     },
@@ -28,14 +31,25 @@ export const appSlice = createSlice({
     updateRoute: (state, action) => {
       state.route.uri = action.payload.uri;
       state.route.title = action.payload.title;
-    }
+    },
+    setIsHydrated: (state, action) => {
+      state.isHydrated = true;
+    },
   },
 });
 
 // Actions
-export const { setWindowWidth, setIsMobile, setStats, updateRoute } = appSlice.actions;
+export const { setWindowWidth, setIsMobile, setStats, updateRoute, setIsHydrated } = appSlice.actions;
 
 // Selectors
+export const hydrate = () => (dispatch) => {
+  dispatch(setIsHydrated(true));
+
+  dispatch(fetchCommanderLeaderboardItems(null, true));
+  dispatch(fetchAll(null, {}, true));
+  dispatch(getAppStats());
+}
+
 export const getAppStats = () => (dispatch) => {
   DynamoConnector.getStats(
     (results) => {
@@ -56,7 +70,7 @@ export const setAppRoute = (route) => (dispatch) => {
         newTitle = `Why?!`;
         break;
       case '/commanders':
-        dispatch(fetchCommanderLeaderboardItems());
+        dispatch(fetchCommanderLeaderboardItems(null, true));
         newRoute = `/commanders`;
         newTitle = `Commanders`;
         break;
