@@ -99,6 +99,7 @@ export function LeaderBoard() {
       }    
   }
 
+
   const handleLoadMore = (evn) => {
     if (!isFetching && nextCursor !== null) {
       dispatch(fetchAll(nextCursor, searchFilters));

@@ -13,12 +13,12 @@ import { fetchFiltered } from '../../data/redux/slices/leaderboardSlice';
 export function FilterPanel() {
   const dispatch = useDispatch();
   const [query, setQuery] = useState(0);
-  const isMobile = useSelector((state) => state.app.isMobile);
-  const hasFilters = useSelector((state) => state.leaderboard.filters.isFiltered);
+  // const isMobile = useSelector((state) => state.app.isMobile);
+  // const hasFilters = useSelector((state) => state.leaderboard.filters.isFiltered);
   const sources = useSelector((state) => state.leaderboard.filters.sources);
   
   // bit is flipped because it checks for positive case of negative value
-  const canClear = hasFilters ? false : true;
+  // const canClear = hasFilters ? false : true;
 
   const dispatchFilteredQuery = () => {
     dispatch(fetchFiltered({

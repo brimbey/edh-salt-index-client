@@ -9,7 +9,6 @@ export const leaderboardSlice = createSlice({
     isFetching: false,
     loadingState: `idle`,
     filters: {
-      isFiltered: false,
       query: '',
       sources: [
         'www.moxfield.com',
@@ -65,8 +64,6 @@ export const leaderboardSlice = createSlice({
     setSearchFilters: (state, action) => {
       state.filters.query = action?.payload?.query || '';
       state.filters.sources = action?.payload?.sources || [];
-      
-      state.filters.isFiltered = (state.filters.query.trim() !== "") || state.filters.sources.length > 0;
     }
   },
 });
@@ -86,11 +83,12 @@ export const fetchFiltered = (payload) => (dispatch) => {
   dispatch(setSearchFilters(payload));
   dispatch(fetchAll(null, {
     ...payload,
-    isFiltered: true,
   }, true))
 }
 
-export const fetchAll = (cursor, filters = {}, isReload = false) => (dispatch) => {
+export const fetchAll = (cursor, filters, isReload = false) => (dispatch) => {
+    console.log(`sources :: ${JSON.stringify(filters?.sources)}`);
+
       cursor = cursor !== -1 ? cursor : null;
       cursor = cursor ? `${new URLSearchParams(cursor).toString()}` : null;
 

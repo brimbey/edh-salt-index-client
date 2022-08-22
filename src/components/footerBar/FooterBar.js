@@ -6,16 +6,15 @@ import {
     Link,
   } from 'react-router-dom';
 import './FooterBar.css';
-import { setAppRoute } from '../../data/redux/slices/appSlice';
 
 
 
 export function FooterBar() {
     const dispatch = useDispatch();
 
-    const isMobile = useSelector((state) => state.app.isMobile);
+    const listItems = useSelector((state) => state?.leaderboard?.listItems);
     const deckCount = useSelector((state) => state?.app?.stats?.total);
-    const deckCountString = deckCount > 0 ? `${deckCount} salty ass decks indexed...` : ` `;
+    const deckCountString = deckCount > 0 ? `Showing ${listItems.length} out of ${deckCount} salty ass decks indexed...` : ` `;
 
     return (
         <View width="100%" UNSAFE_style={{ position: 'fixed', bottom: '0', backgroundColor: '#1e1e1e', height: '40px' }}>

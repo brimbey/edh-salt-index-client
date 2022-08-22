@@ -55,19 +55,19 @@ export const DynamoConnector = {
         fetchUri = `${fetchUri}?cursor=${cursor}`;
     }
 
-    if (filters?.isFiltered) {
+    // if (filters?.isFiltered) {
         if (!cursor) {
             fetchUri = `${fetchUri}?`;
         } else {
             fetchUri = `${fetchUri}&`;
         }
 
-        fetchUri = `${fetchUri}sources=${encodeURIComponent(filters?.sources.toString())}`;
+        fetchUri = `${fetchUri}sources=${encodeURIComponent(filters?.sources?.toString())}`;
 
         if (filters?.query) {
             fetchUri = `${fetchUri}&query=${encodeURIComponent(filters?.query)}`;
         }
-    }
+    // }
 
     console.log(`---> fetchUri: ${fetchUri}`);
     

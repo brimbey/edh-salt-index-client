@@ -2,7 +2,6 @@ import { createSlice } from '@reduxjs/toolkit';
 import { DynamoConnector } from '../../DynamoConnector';
 import { fetchCommanderLeaderboardItems } from './commandersLeaderboardSlice';
 import { fetchAll, setSearchFilters } from './leaderboardSlice';
-import { useDispatch, useSelector } from 'react-redux';
 
 export const appSlice = createSlice({
   name: 'app',
@@ -46,7 +45,18 @@ export const hydrate = () => (dispatch) => {
   dispatch(setIsHydrated(true));
 
   dispatch(fetchCommanderLeaderboardItems(null, true));
-  dispatch(fetchAll(null, {}, true));
+  dispatch(fetchAll(
+    null, 
+    {
+      query: '',
+      sources: [
+        'www.moxfield.com',
+        'www.archidekt.com',
+        'www.tappedout.net',
+        'www.manabox.app',
+      ],
+    }, 
+    true));
   dispatch(getAppStats());
 }
 
